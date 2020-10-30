@@ -47,6 +47,8 @@ Copyright : 2020, Dorota Bailly & Jerome Blin
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
     │
+    ├── poetry.lock
+    │
     └── pyproject.TOML     <- poetry file with dependencies
 
 ==============================
