@@ -97,6 +97,7 @@ Goal : create a local virtual environment in the folder `./.venv/`.
 
 ```
 $ poetry install
+```
 
 
 ## 3. Start coding! 
