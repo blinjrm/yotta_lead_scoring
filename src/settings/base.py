@@ -18,7 +18,7 @@ LOGS_DIR = os.path.join(REPO_DIR, 'logs')
 
 
 # Logging
-def enable_logging(log_filename, logging_level=logging.INFO):
+def enable_logging(log_filename, logging_level=logging.DEBUG):
     """Set loggings parameters.
 
     Parameters
@@ -42,4 +42,22 @@ def enable_logging(log_filename, logging_level=logging.INFO):
     )
 
 
+# Categrical columns
+categorical_features = ['DERNIERE_ACTIVITE', 
+                        'DERNIERE_ACTIVITE_NOTABLE', 
+                        'PAYS', 
+                        'VILLE', 
+                        'ORIGINE_LEAD', 
+                        'SOURCE_LEAD', 
+                        'SPECIALISATION', 
+                        'STATUT_ACTUEL', 
+                        'Comment avez-vous entendu parler de nous ?']
 
+# Numerical columns
+numerical_features = ['NB_VISITES', 
+                      'DUREE_SUR_SITEWEB', 
+                      'NB_PAGES_VUES_PAR_VISITE']
+
+# Boolean columns
+boolean_features = ['CONTACT_PAR_MAIL', 
+                    'Souhaites-tu recevoir une copie de notre livre blanc ?']
