@@ -7,17 +7,21 @@ Should NOT contain any secrets.
 """
 
 import os
+import yaml
 import logging
+
+import src.settings.column_names as column_names
+
 
 # By default the raw data is stored in this repository's "data/raw/" folder.
 # You can change it in your own settings file.
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 RAW_DATA_DIR = os.path.join(REPO_DIR, 'data/raw/')
 OUTPUTS_DIR = os.path.join(REPO_DIR, 'outputs')
 LOGS_DIR = os.path.join(REPO_DIR, 'logs')
 
 
-# Logging
 def enable_logging(log_filename, logging_level=logging.DEBUG):
     """Set loggings parameters.
 
@@ -42,22 +46,5 @@ def enable_logging(log_filename, logging_level=logging.DEBUG):
     )
 
 
-# Categrical columns
-categorical_features = ['DERNIERE_ACTIVITE', 
-                        'DERNIERE_ACTIVITE_NOTABLE', 
-                        'PAYS', 
-                        'VILLE', 
-                        'ORIGINE_LEAD', 
-                        'SOURCE_LEAD', 
-                        'SPECIALISATION', 
-                        'STATUT_ACTUEL', 
-                        'Comment avez-vous entendu parler de nous ?']
-
-# Numerical columns
-numerical_features = ['NB_VISITES', 
-                      'DUREE_SUR_SITEWEB', 
-                      'NB_PAGES_VUES_PAR_VISITE']
-
-# Boolean columns
-boolean_features = ['CONTACT_PAR_MAIL', 
-                    'Souhaites-tu recevoir une copie de notre livre blanc ?']
+FEATURES = column_names.FEATURES
+LABEL = column_names.LABEL
