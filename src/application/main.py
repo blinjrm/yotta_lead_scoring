@@ -30,7 +30,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-import src.infrastructure.make_dataset as make_dataset
+from src.infrastructure.make_dataset import DatasetBuilder, DataCleaner
+
 import src.domain.build_features as build_features
 import src.settings.base as stg
 
@@ -44,16 +45,23 @@ filename = PARSER.parse_args().filename
 logging.info('_'*39)
 logging.info('_________ Launch new analysis _________\n')
 
-DT = make_dataset.DatasetBuilder(filename=filename).data
+df = DatasetBuilder(filename=filename).data
+df_clean = DataCleaner(df).data
 
-X = DT.drop(stg.LABEL, axis=1)
-y = DT[stg.LABEL].values
+X = df_clean.drop(columns=stg.TARGET)
+y = df_clean[stg.TARGET].values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # test_size should be 0.2
 
+
+import sys; sys.exit()
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 num_pipeline = make_pipeline(make_dataset.FeatureSelector(np.number),
                              build_features.NumericalTransformer(),
+                             # Deal with outliers
                              SimpleImputer(strategy='median'),
                              StandardScaler())
 
@@ -68,6 +76,14 @@ full_pipeline = make_pipeline(data_pipeline, LogisticRegression(max_iter=1000))
 
 full_pipeline.fit(X_train, y_train)
 
+## Pour notebook grid_search
+# X_prep = full_pipeline.fit_transform(X_train)
+# GridSearchCV(X_prep, models, params)
+
+# full_pipeline.to_pickle()
+# full_pipeline.dump(pipeline, 'path/to/dat')
+# full-pipeline.LogisticRegression()
+
 # Renvoie 0 ou 1
 y_pred = full_pipeline.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
@@ -78,7 +94,11 @@ y_pred = full_pipeline.predict_proba(X_test)[:,1]
 log_loss = log_loss(y_test, y_pred)
 print('\nlog_loss : ', log_loss, '\n')
 
-data_with_prediction = X_test
+data_with_prediction = X_test.copy()
 data_with_prediction['prediction'] = pd.Series(y_pred, index=data_with_prediction.index)                                      
 data_with_prediction = data_with_prediction.sort_values(by=['prediction'], ascending=False)
 print(data_with_prediction)
+
+
+# ! sudo apt-get install xdg-utils
+# ! sudo apt-get install graphviz

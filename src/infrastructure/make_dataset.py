@@ -18,7 +18,7 @@ import src.settings.base as stg
 
 
 class DatasetBuilder:
-    """Creates dataet from flat file.
+    """Creates dataet from CSV file.
 
     Attributes
     ----------
@@ -32,9 +32,7 @@ class DatasetBuilder:
     def _load_data_from_csv(self, filename):
         if self._check_file_extension(filename):
             df = self._open_file(filename)
-            df_without_accents = self._remove_accents(df)
-            df_without_uppercase = self._remove_upper_case(df_without_accents)
-            return df_without_uppercase
+            return df
 
     def _check_file_extension(self, filename):
         logging.info('-'*20)
@@ -43,7 +41,7 @@ class DatasetBuilder:
             logging.info('.. Done')
             return True
         else:
-            logging.info('.. Extension must be .csv')
+            logging.info('.. ERROR: Extension must be .csv')
             raise FileExistsError('Extension must be .csv')
 
     def _open_file(self, filename):
@@ -57,6 +55,31 @@ class DatasetBuilder:
             logging.info('.. FileNotFoundError')
             raise FileNotFoundError(f'Error in SalesDataset initialization - {error}')
 
+
+class DataCleaner:
+    """Cleans the dataset:
+    - remove accents
+    - remove uppercase
+    - drop columns
+
+    Attributes
+    ----------
+    data: dataset in a Pandas dataframe
+
+    """
+
+    def __init__(self, df):
+        self.data = self._clean_dataset(df)
+
+    def _clean_dataset(self, df):
+        df_without_accents = self._remove_accents(df)
+        df_without_uppercase = self._remove_upper_case(df_without_accents)
+        df_without_dupplicates = df_without_uppercase.drop_duplicates()
+        df_without_unknown_columns = self._remove_unknown_columns(df_without_dupplicates)
+        df_with_index = self._set_ID_as_index(df_without_unknown_columns)
+        df_without_constants = self._remove_constants(df_with_index)
+        return df_without_constants
+
     def _remove_accents(self, df):
         cols = df.select_dtypes(include=[np.object]).columns
         df[cols] = df[cols].apply(lambda x: x.str.normalize('NFKD')\
@@ -68,22 +91,16 @@ class DatasetBuilder:
         df[cols] = df[cols].apply(lambda x: x.str.lower())
         return df
 
-    @property
-    def split_features(self):
-        pass
-        # numerical_features = np numeric
+    def _remove_unknown_columns(self, df): 
+        for col in df.columns:
+            if col not in stg.FEATURES + [stg.TARGET]:
+                df = df.drop(columns=col)
+        return df
 
+    def _set_ID_as_index(self, df):
+        df_with_index = df.set_index(stg.ID_CLIENT_COL)
+        return df_with_index
 
-class FeatureSelector(BaseEstimator, TransformerMixin):
-    """Filters dataset using the selected features 
-    (numerical vs. categorical vs. boolean)
-    """
-    
-    def __init__(self, _dtype):
-        self._dtype = _dtype
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X, y=None):
-        return X.select_dtypes(include=self._dtype)
+    def _remove_constants(self, df):
+        df_without_constants = df.drop(columns=stg.CONSTANT_FEATURES_TO_DROP)
+        return df_without_constants

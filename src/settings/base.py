@@ -10,7 +10,7 @@ import os
 import yaml
 import logging
 
-import src.settings.column_names as column_names
+from src.settings.data_file_settings import *
 
 
 # By default the raw data is stored in this repository's "data/raw/" folder.
@@ -46,5 +46,16 @@ def enable_logging(log_filename, logging_level=logging.DEBUG):
     )
 
 
-FEATURES = column_names.FEATURES
-LABEL = column_names.LABEL
+CONSTANT_FEATURES_TO_DROP = [
+    MAGAZINE_COL,
+    SOUHAITE_RECEVOIR_INFOS_COL,
+    SOUHAITE_RECEVOIR_MAJ_COL,
+    SOUHAITE_RECEVOIR_MSG_COL,
+    SOUHAITE_PAYER_CHEQUE_COL,
+]
+
+OTHER_FEATURES_TO_DROP = [
+    # TODO: ajouter les autres features à supprimer (features subjectives)
+]
+
+CATEGORY_MINIMUM_THRESHOLD = 0.25
