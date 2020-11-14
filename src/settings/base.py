@@ -10,7 +10,7 @@ import os
 import yaml
 import logging
 
-from src.settings.data_file_settings import *
+from src.settings.column_names import *
 
 
 # By default the raw data is stored in this repository's "data/raw/" folder.
@@ -55,7 +55,15 @@ CONSTANT_FEATURES_TO_DROP = [
 ]
 
 OTHER_FEATURES_TO_DROP = [
-    # TODO: ajouter les autres features à supprimer (features subjectives)
+    # TODO: ajouter les autres features à supprimer (features subjectives / TAGS ?)
 ]
 
-CATEGORY_MINIMUM_THRESHOLD = 0.25
+FEATURES_WITH_LOW_SECOND_CATEGORY_TO_DROP = [
+    CONTACT_PAR_TELEPHONE_COL,
+    ANNONCE_VUE_COL,
+    ARTICLE_JOURNAL_COL,
+    FORUM_COL,
+    JOURNAUX_COL,
+    PUB_DIGITALE_COL,
+    RECOMMANDATION_COL,
+]

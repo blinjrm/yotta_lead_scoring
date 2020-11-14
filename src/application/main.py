@@ -1,4 +1,4 @@
-"""Module to build dataset.
+"""Module to train the model.
 
 Example
 -------
@@ -31,8 +31,8 @@ import numpy as np
 import pandas as pd
 
 from src.infrastructure.make_dataset import DatasetBuilder, DataCleaner
+from src.domain.build_features import FeatureSelector, NumericalTransformer, CategoricalTransformer
 
-import src.domain.build_features as build_features
 import src.settings.base as stg
 
 
@@ -51,22 +51,16 @@ df_clean = DataCleaner(df).data
 X = df_clean.drop(columns=stg.TARGET)
 y = df_clean[stg.TARGET].values
 
-
-
-import sys; sys.exit()
-
-
-
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-num_pipeline = make_pipeline(make_dataset.FeatureSelector(np.number),
-                             build_features.NumericalTransformer(),
+num_pipeline = make_pipeline(FeatureSelector(np.number),
+                             NumericalTransformer(),
                              # Deal with outliers
                              SimpleImputer(strategy='median'),
                              StandardScaler())
 
-cat_pipeline = make_pipeline(make_dataset.FeatureSelector(object),
-                             build_features.CategoricalTransformer(),
+cat_pipeline = make_pipeline(FeatureSelector(object), 
+                             SimpleImputer(strategy="most_frequent"),
                              OneHotEncoder(handle_unknown="ignore"))
 
 data_pipeline = make_union(num_pipeline, cat_pipeline)
@@ -75,14 +69,6 @@ full_pipeline = make_pipeline(data_pipeline, LogisticRegression(max_iter=1000))
 # full_pipeline = make_pipeline(data_pipeline, RandomForestClassifier())
 
 full_pipeline.fit(X_train, y_train)
-
-## Pour notebook grid_search
-# X_prep = full_pipeline.fit_transform(X_train)
-# GridSearchCV(X_prep, models, params)
-
-# full_pipeline.to_pickle()
-# full_pipeline.dump(pipeline, 'path/to/dat')
-# full-pipeline.LogisticRegression()
 
 # Renvoie 0 ou 1
 y_pred = full_pipeline.predict(X_test)
@@ -98,7 +84,3 @@ data_with_prediction = X_test.copy()
 data_with_prediction['prediction'] = pd.Series(y_pred, index=data_with_prediction.index)                                      
 data_with_prediction = data_with_prediction.sort_values(by=['prediction'], ascending=False)
 print(data_with_prediction)
-
-
-# ! sudo apt-get install xdg-utils
-# ! sudo apt-get install graphviz

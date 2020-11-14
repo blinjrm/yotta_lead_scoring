@@ -74,8 +74,8 @@ class DataCleaner:
     def _clean_dataset(self, df):
         df_without_accents = self._remove_accents(df)
         df_without_uppercase = self._remove_upper_case(df_without_accents)
-        df_without_dupplicates = df_without_uppercase.drop_duplicates()
-        df_without_unknown_columns = self._remove_unknown_columns(df_without_dupplicates)
+        df_without_duplicates = df_without_uppercase.drop_duplicates()
+        df_without_unknown_columns = self._remove_unknown_columns(df_without_duplicates)
         df_with_index = self._set_ID_as_index(df_without_unknown_columns)
         df_without_constants = self._remove_constants(df_with_index)
         return df_without_constants

@@ -2,9 +2,9 @@
 
 Classes
 -------
+FeatureSelector
 NumericalTransformer
 CategoricalTransformer
-BooleanTransformer
 
 """
 
@@ -65,21 +65,4 @@ class CategoricalTransformer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None):
-    #     X_with_country = self._tranform_country(X)
-    #     X_with_city = self._transform_city(X_with_country)
-    #     X_without_nan = self._replace_all_missing_values(X_with_city)
-    #     return X_without_nan.values
-        X = X.fillna('Non_renseigne')
-        return X
-
-    # def _tranform_country(self, X):
-    #     X.loc[(X['PAYS'] != 'India') | (X['PAYS'] != 'United States'), 'PAYS'] = 'Autre'
-    #     return X
-
-    # def _transform_city(self, X):
-    #     X.loc[X['VILLE'].isna(), 'VILLE'] = 'Non_renseigné'
-    #     return X
-
-    # def _replace_all_missing_values(self, X):
-    #     X = X.fillna('Non_renseigné')
-    #     return X
+        return X.values
