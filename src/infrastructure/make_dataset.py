@@ -78,7 +78,8 @@ class DataCleaner:
         df_without_unknown_columns = self._remove_unknown_columns(df_without_duplicates)
         df_with_index = self._set_ID_as_index(df_without_unknown_columns)
         df_without_nan_target = self._drop_samples_without_target(df_with_index)
-        return df_without_nan_target
+        df_with_category_type = self._change_object_type_to_category(df_without_nan_target)
+        return df_with_category_type
 
     def _remove_accents(self, df):
         cols = df.select_dtypes(include=[np.object]).columns
@@ -105,6 +106,14 @@ class DataCleaner:
         df = df.copy()
         df_without_target_nan = df.dropna(subset=[stg.CONVERTI_COL])
         return df_without_target_nan
+    
+    def _change_object_type_to_category(self,df):
+        df_changed = df.copy()
+        numerical_cols = df.select_dtypes(include=np.number).columns
+        categorial_cols = df.select_dtypes(include=object).columns
+        for col in categorial_cols :
+            df_changed[col] = df_changed[col].astype("category")
+        return df_changed
 
 
 

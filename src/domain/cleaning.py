@@ -55,8 +55,7 @@ class DataCleaner :
 
     def _clean(self,df):
         df = df.copy()
-        df_with_category_type = self._change_object_type_to_category(df)
-        df_without_non_exploitable_features = self._drop_not_exploitable_features(df_with_category_type)
+        df_without_non_exploitable_features = self._drop_not_exploitable_features(df)
         df_without_constants = self._remove_constants(df_without_non_exploitable_features)
         df_without_features_low_second_category = self._drop_features_with_low_second_category(df_without_constants)
         df_without_outliers_errors = self._correct_outliers_errors(df_without_features_low_second_category)
@@ -68,14 +67,7 @@ class DataCleaner :
         df_with_drop_features = df.drop(stg.OTHER_FEATURES_TO_DROP,axis=1)
         return df_with_drop_features
     
-    @staticmethod
-    def _change_object_type_to_category(df):
-        df_changed = df.copy()
-        numerical_cols = df.select_dtypes(include=np.number).columns
-        categorial_cols = df.select_dtypes(include=object).columns
-        for col in categorial_cols :
-            df_changed[col] = df_changed[col].astype("category")
-        return df_changed
+
 
     @staticmethod
     def _drop_features_with_low_second_category(df):
