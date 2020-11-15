@@ -30,9 +30,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from src.infrastructure.make_dataset import DatasetBuilder, DataCleaner
-from src.domain.build_features import FeatureSelector, NumericalTransformer, CategoricalTransformer
-
+import src.domain.cleaning as cleaning  
+from src.domain.build_features import FeatureSelector, NumericalTransformer
 import src.settings.base as stg
 
 
@@ -45,8 +44,9 @@ filename = PARSER.parse_args().filename
 logging.info('_'*39)
 logging.info('_________ Launch new analysis _________\n')
 
-df = DatasetBuilder(filename=filename).data
-df_clean = DataCleaner(df).data
+
+
+df_clean = cleaning.DataCleaner(filename=filename).clean_data
 
 X = df_clean.drop(columns=stg.TARGET)
 y = df_clean[stg.TARGET].values
@@ -54,21 +54,25 @@ y = df_clean[stg.TARGET].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 num_pipeline = make_pipeline(FeatureSelector(np.number),
-                             NumericalTransformer(),
+                             #NumericalTransformer(),
                              # Deal with outliers
                              SimpleImputer(strategy='median'),
-                             StandardScaler())
+                             StandardScaler()
+                             )
 
-cat_pipeline = make_pipeline(FeatureSelector(object), 
+cat_pipeline = make_pipeline(FeatureSelector('category'),
                              SimpleImputer(strategy="most_frequent"),
-                             OneHotEncoder(handle_unknown="ignore"))
+                             OneHotEncoder(handle_unknown="ignore")
+                             )
 
 data_pipeline = make_union(num_pipeline, cat_pipeline)
 
-full_pipeline = make_pipeline(data_pipeline, LogisticRegression(max_iter=1000))
-# full_pipeline = make_pipeline(data_pipeline, RandomForestClassifier())
+
+#full_pipeline = make_pipeline(data_pipeline, LogisticRegression(max_iter=1000))
+full_pipeline = make_pipeline(data_pipeline, RandomForestClassifier())
 
 full_pipeline.fit(X_train, y_train)
+
 
 # Renvoie 0 ou 1
 y_pred = full_pipeline.predict(X_test)
