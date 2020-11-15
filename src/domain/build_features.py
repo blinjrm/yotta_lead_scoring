@@ -49,8 +49,8 @@ class NumericalTransformer(BaseEstimator, TransformerMixin):
         return X.values
 
 
-class CategoricalTransformer(BaseEstimator, TransformerMixin):
-    """Transforms the categorical columns.
+class NewFeatures():
+    """Define new features based on categorial features
 
     Attributes
     ----------
@@ -61,8 +61,4 @@ class CategoricalTransformer(BaseEstimator, TransformerMixin):
     def __init__(self):
         pass
 
-    def fit(self, X, y=None):
-        return self
 
-    def transform(self, X, y=None):
-        return X.values

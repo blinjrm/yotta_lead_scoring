@@ -77,8 +77,8 @@ class DataCleaner:
         df_without_duplicates = df_without_uppercase.drop_duplicates()
         df_without_unknown_columns = self._remove_unknown_columns(df_without_duplicates)
         df_with_index = self._set_ID_as_index(df_without_unknown_columns)
-        df_without_constants = self._remove_constants(df_with_index)
-        return df_without_constants
+        df_without_nan_target = self._drop_samples_without_target(df_with_index)
+        return df_without_nan_target
 
     def _remove_accents(self, df):
         cols = df.select_dtypes(include=[np.object]).columns
@@ -101,6 +101,11 @@ class DataCleaner:
         df_with_index = df.set_index(stg.ID_CLIENT_COL)
         return df_with_index
 
-    def _remove_constants(self, df):
-        df_without_constants = df.drop(columns=stg.CONSTANT_FEATURES_TO_DROP)
-        return df_without_constants
+    def _drop_samples_without_target(self,df):
+        df = df.copy()
+        df_without_target_nan = df.dropna(subset=[stg.CONVERTI_COL])
+        return df_without_target_nan
+
+
+
+    
