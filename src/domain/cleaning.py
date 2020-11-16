@@ -94,6 +94,11 @@ class DataCleaner :
     
         return df    
 
+    @staticmethod
+    def _correct_select_niveau_lead(df):
+        df = df.copy()
+        df['NIVEAU_LEAD'] = df['NIVEAU_LEAD'].replace('select', np.nan) 
+        return df
 
 
 
