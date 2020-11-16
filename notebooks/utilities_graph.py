@@ -51,8 +51,6 @@ def graph_histogram(df, features):
 
 def graph_histogram_tronque(df, features):
 
-    #features = ['NB_VISITES','NB_PAGES_VUES_PAR_VISITE','DUREE_SUR_SITEWEB','SCORE_ACTIVITE','SCORE_PROFIL']
-
     nb_features = len(features)
     nb_graphs = 3 
 
@@ -66,14 +64,13 @@ def graph_histogram_tronque(df, features):
     for feature in features :
         j=0
 
-        if feature=='DUREE_SUR_SITEWEB' :
+        if feature in ['DUREE_SUR_SITEWEB','DUREE_MOY_PAR_VISITE'] :
             sns.histplot(df[feature],stat='count', ax=axes[i][j])
         else : 
             sns.histplot(df[feature],stat='count', ax=axes[i][j], discrete=True)
         axes[i][j].set_title('Distribution of {}'.format(feature))
 
         # on coupe les valeurs très élevées pour voire quelques chose sur le graphique
-    
         if feature in ['NB_VISITES','NB_PAGES_VUES_PAR_VISITE','DUREE_SUR_SITEWEB']: 
             xmax = df[feature].quantile(0.995)
         else: 

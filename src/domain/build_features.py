@@ -49,6 +49,7 @@ class NumericalTransformer(BaseEstimator, TransformerMixin):
         return X.values
 
 
+
 class NewFeatures():
     """Define new features based on categorial features
 
@@ -60,5 +61,22 @@ class NewFeatures():
 
     def __init__(self):
         pass
+
+    def add_nb_visites_null (self,df):
+        # appliquer après imputation
+        df = df.copy()
+        df['NB_VISITES_IS_NULL'] = df['NB_VISITES'].apply(lambda x: 1 if x==0 else 0)
+        return df
+
+    def add_duree_moy_par_visite (self,df):
+        # appliquer après imputation
+        df = df.copy()
+        df['NB_VISITES_IS_NULL'] = df['NB_VISITES'].apply(lambda x: 1 if x==0 else 0)
+        return df
+    
+    def regroupe_pays(self,df):
+        df = df.copy()
+        return df
+
 
 

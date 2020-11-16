@@ -54,6 +54,7 @@ def display_quantile(df, features) :
 
     report_quantile = df[features].quantile(q=[0,0.20,0.5,0.95,0.99,0.995,1])
     report_quantile.index = ["{:.1%}".format(q) for q in report_quantile.index]
+    print("Quantiles de distribution")
     print(report_quantile)
 
 
@@ -101,7 +102,7 @@ def test_stat_same_distribution(df,features):
     report2.index = features
     report3.index = features
 
-    print(report1,'\n')
+    #print(report1,'\n')
     print(report2,'\n')
     print(report3,'\n')
 
