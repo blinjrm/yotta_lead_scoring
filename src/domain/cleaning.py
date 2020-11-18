@@ -144,6 +144,8 @@ class DataCleaner :
         
         df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le navigateur","a clique sur le lien")
         df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le mail","a clique sur le lien")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dand le navigateur","a clique sur le lien")
+
         
         return df
 
