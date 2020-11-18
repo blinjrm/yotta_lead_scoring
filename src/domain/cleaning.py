@@ -97,7 +97,7 @@ class DataCleaner :
     @staticmethod
     def _correct_select_niveau_lead(df):
         df = df.copy()
-        df['NIVEAU_LEAD'] = df['NIVEAU_LEAD'].replace('select', np.nan) 
+        df[stg.NIVEAU_LEAD_COLIVEAU_LEAD] = df[stg.NIVEAU_LEAD_COLU_LEAD].replace('select', np.nan) 
         return df
 
 
