@@ -59,15 +59,14 @@ class DataCleaner :
         df_without_constants = self._remove_constants(df_without_non_exploitable_features)
         df_without_features_low_second_category = self._drop_features_with_low_second_category(df_without_constants)
         df_without_outliers_errors = self._correct_outliers_errors(df_without_features_low_second_category)
-        return  df_without_outliers_errors
+        df_with_corrected_nievau_lead = self._correct_select_niveau_lead(df_without_outliers_errors)
+        return  df_with_corrected_nievau_lead
 
     @staticmethod
     def _drop_not_exploitable_features(df):
         df = df.copy()
         df_with_drop_features = df.drop(stg.OTHER_FEATURES_TO_DROP,axis=1)
         return df_with_drop_features
-    
-
 
     @staticmethod
     def _drop_features_with_low_second_category(df):
