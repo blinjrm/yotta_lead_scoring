@@ -115,10 +115,22 @@ class DataCleaner :
   
         X = X.copy()
         X[stg.NIVEAU_LEAD_COL] = X[stg.NIVEAU_LEAD_COL].replace( "etudiant d'une certaine ecole","etudiant")
+        X[stg.NIVEAU_LEAD_COL] = X[stg.NIVEAU_LEAD_COL].replace( "etudiant en double specialisation","etudiant")
+        
+        
+        return X
+    
+    
+    @staticmethod
+    def _create_category_en_activite(df):
+  
+        X = X.copy()
+        X[stg.STATUT_ACTUEL_COL] = X[stg.STATUT_ACTUEL_COL].replace( "homme d'affaire","en activite")
+        X[stg.STATUT_ACTUEL_COL] = X[stg.STATUT_ACTUEL_COL].replace( "professionnel en activite","en activite")
         return X
 
 
-
+STATUT_ACTUEL : homme d'affaire --> professionnel en activite
 
 
 
