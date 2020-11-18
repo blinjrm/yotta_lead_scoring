@@ -59,8 +59,9 @@ class DataCleaner :
         df_without_constants = self._remove_constants(df_without_non_exploitable_features)
         df_without_features_low_second_category = self._drop_features_with_low_second_category(df_without_constants)
         df_without_outliers_errors = self._correct_outliers_errors(df_without_features_low_second_category)
-        df_with_corrected_nievau_lead = self._correct_select_niveau_lead(df_without_outliers_errors)
-        return  df_with_corrected_nievau_lead
+        df_with_corrected_niveau_lead = self._correct_select_niveau_lead(df_without_outliers_errors)
+        df_with_category_formulaire_add = self._add_category_formulaire_add(df_with_corrected_niveau_lead)
+        return df_with_category_formulaire_add
 
     @staticmethod
     def _drop_not_exploitable_features(df):
@@ -99,7 +100,13 @@ class DataCleaner :
         df[stg.NIVEAU_LEAD_COLIVEAU_LEAD] = df[stg.NIVEAU_LEAD_COLU_LEAD].replace('select', np.nan) 
         return df
 
-
+    @staticmethod
+    def _add_category_formulaire_add(df):
+  
+        X = X.copy()
+        X[stg.ORIGINE_LEAD_COL] = X[stg.ORIGINE_LEAD_COL].replace( "formulaire quick add","formulaire add")
+        X[stg.ORIGINE_LEAD_COL] = X[stg.ORIGINE_LEAD_COL].replace( "formulaire lead add","formulaire add",)
+        return X
 
   
 

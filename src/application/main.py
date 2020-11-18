@@ -74,7 +74,6 @@ num_pipeline = make_pipeline(FeatureSelector(np.number),
 cat_pipeline = make_pipeline(FeatureSelector('category'),
                             drop_quality_niveau_lead(),
                             drop_indexes(),
-                            regroupe_category_origine(),
                             regroupe_create_category_autre(),
                             SimpleImputer(strategy="most_frequent"),
                             OneHotEncoder(handle_unknown="ignore")
