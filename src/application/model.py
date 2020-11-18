@@ -96,19 +96,12 @@ def tune_hyperparameters(X_train, y_train, X_valid, y_valid):
     study_RF = optuna.create_study(direction="maximize")
     study_RF.optimize(lambda trial: objective_RF(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
     rf = RandomForestClassifier(**study_RF.best_params)
-    # rf.fit(X_train, y_train)
 
     study_CatB = optuna.create_study(direction="maximize")
     study_CatB.optimize(lambda trial: objective_CatB(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
     catb = CatBoostClassifier(**study_CatB.best_params, verbose=0)
-    # catb.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], early_stopping_rounds=100)
 
-    # study_SVC = optuna.create_study(direction="maximize")
-    # study_SVC.optimize(lambda trial: objective_SVC(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
-    # svc = SVC(**study_SVC.best_params, probability=True)
-    # svc.fit(X_train, y_train)
-
-    return rf, catb #, svc
+    return rf, catb 
 
 
 def create_stacked_model(X_train, y_train, X_valid, y_valid):
@@ -119,17 +112,19 @@ def create_stacked_model(X_train, y_train, X_valid, y_valid):
     rf, catb = tune_hyperparameters(X_train, y_train, X_valid, y_valid)
     lr = LogisticRegression()
 
-    sclf = StackingCVClassifier(classifiers=[rf, catb],
-                                use_probas=True,
-                                meta_classifier=lr,
-                                random_state=42
-                                )
+    stacked_model = StackingCVClassifier(classifiers=[rf, catb],
+                                         use_probas=True,
+                                         meta_classifier=lr,
+                                         random_state=42
+                                        )
 
-    sclf.fit(X_train, y_train)
+    stacked_model.fit(X_train, y_train)
 
-    filename = os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')
-    with open(filename, 'wb') as f:
-        pickle.dump(sclf, f)
+    return stacked_model
+
+    # filename = os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')
+    # with open(filename, 'wb') as f:
+    #     pickle.dump(stacked_model, f)
 
 
 if __name__ == "__main__":

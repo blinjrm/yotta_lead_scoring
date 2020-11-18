@@ -16,7 +16,8 @@ from src.settings.column_names import *
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-RAW_DATA_DIR = os.path.join(REPO_DIR, 'data/raw/')
+RAW_DATA_DIR = os.path.join(REPO_DIR, 'data/training/')
+PREDICTION_DATA_DIR = os.path.join(REPO_DIR, 'data/prediction/')
 OUTPUTS_DIR = os.path.join(REPO_DIR, 'outputs')
 LOGS_DIR = os.path.join(REPO_DIR, 'logs')
 MODEL_DIR = os.path.join(REPO_DIR, 'model')

@@ -25,12 +25,11 @@ from os.path import basename, join
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, log_loss
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import FeatureUnion, Pipeline, make_pipeline, make_union
+from sklearn.pipeline import make_pipeline, make_union
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 import src.domain.cleaning as cleaning
@@ -47,15 +46,12 @@ from src.domain.build_features import (FeatureSelector, NumericalTransformer,
 stg.enable_logging(log_filename=f'{basename(__file__)}.log', logging_level=logging.INFO)
 
 PARSER = argparse.ArgumentParser(description='File containing the dataset.')
-PARSER.add_argument('--filename', '-f', required=True, help='Name of the file containing the raw data')
+PARSER.add_argument('--filename', '-f', required=True, help='Name of the file containing the training data')
 filename = PARSER.parse_args().filename
 
-logging.info('_'*39)
-logging.info('_________ Launch new analysis _________\n')
+logging.info('_'*42)
+logging.info('_________ Launch new training _________\n')
 
-df0 = infra.DatasetBuilder(filename).data
-
-df_before = cleaning.DataCleaner(filename=filename).entry_data
 df_clean = cleaning.DataCleaner(filename=filename).clean_data
 
 X = df_clean.drop(columns=stg.TARGET)
@@ -67,8 +63,6 @@ num_pipeline = make_pipeline(FeatureSelector(np.number),
                              add_nb_visites_null(),
                              add_durre_moy_par_visite(),
                              drop_scores(),
-                             #NumericalTransformer(),
-                             # Deal with outliers - transformation log
                              SimpleImputer(strategy='median'),
                              StandardScaler()
                              )
@@ -84,33 +78,26 @@ cat_pipeline = make_pipeline(FeatureSelector('category'),
 
 data_pipeline = make_union(num_pipeline, cat_pipeline)
 
-if not os.path.exists(os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')):
+filename = os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')
+if not os.path.exists(filename):
     X_train_transformed = data_pipeline.fit_transform(X_train, y_train)
     X_valid_transformed = data_pipeline.transform(X_test)
 
-    logging.info('finding best hyperparameters...\n')
-    create_stacked_model(X_train_transformed, y_train, X_valid_transformed, y_test)
-
-logging.info('loading model from model/...\n')
-filename = os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')
-with open(filename, 'rb') as f:
-    stacked_model = pickle.load(f)
+    logging.info('finding best hyperparameters for new model...\n')
+    stacked_model = create_stacked_model(X_train_transformed, y_train, X_valid_transformed, y_test)
+else:
+    logging.info('loading existing model from model/...\n')
+    with open(filename, 'rb') as f:
+        stacked_model = pickle.load(f)
 
 full_pipeline = make_pipeline(data_pipeline, stacked_model)
 
 logging.info('Training model...\n')
 full_pipeline.fit(X_train, y_train)
 
-# Renvoie 0 ou 1
+with open(filename, 'wb') as f:
+    pickle.dump(stacked_model, f)
+
 y_pred = full_pipeline.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-print('\naccuracy : ', accuracy)
-
-# Renvoie la probabilité d'être converti
-y_pred = full_pipeline.predict_proba(X_test)[:,1]
-log_loss = log_loss(y_test, y_pred)
-print('\nlog_loss : ', log_loss, '\n')
-
-data_with_prediction = X_test.copy()
-data_with_prediction['prediction'] = pd.Series(y_pred, index=data_with_prediction.index)                                      
-data_with_prediction = data_with_prediction.sort_values(by=['prediction'], ascending=False)
+print(f'\nThe model was successfully trained, with an accuracy of {accuracy}%.')

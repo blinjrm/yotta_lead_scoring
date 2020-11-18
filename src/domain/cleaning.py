@@ -53,7 +53,6 @@ class DataCleaner :
         df_with_cleaning = self._clean(df)
         return df_with_cleaning
     
-
     def _clean(self,df):
         df = df.copy()
         df_without_non_exploitable_features = self._drop_not_exploitable_features(df)
@@ -68,8 +67,6 @@ class DataCleaner :
         df_with_drop_features = df.drop(stg.OTHER_FEATURES_TO_DROP,axis=1)
         return df_with_drop_features
     
-
-
     @staticmethod
     def _drop_features_with_low_second_category(df):
         df = df.copy()
