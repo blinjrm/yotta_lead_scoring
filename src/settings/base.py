@@ -20,6 +20,7 @@ REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 RAW_DATA_DIR = os.path.join(REPO_DIR, 'data/raw/')
 OUTPUTS_DIR = os.path.join(REPO_DIR, 'outputs')
 LOGS_DIR = os.path.join(REPO_DIR, 'logs')
+MODEL_DIR = os.path.join(REPO_DIR, 'model')
 
 
 def enable_logging(log_filename, logging_level=logging.DEBUG):
