@@ -35,7 +35,7 @@ from src.domain.build_features import FeatureSelector, NumericalTransformer
 import src.settings.base as stg
 from src.domain.build_features import add_durre_moy_par_visite, add_nb_visites_null
 from src.domain.build_features import drop_indexes, drop_quality_niveau_lead, drop_scores
-from src.domain.build_features import regroupe_category_origine, regroupe_create_category_autre
+from src.domain.build_features import regroupe_create_category_autre
 import src.infrastructure.make_dataset as infra 
 
 
@@ -53,6 +53,7 @@ df0 = infra.DatasetBuilder(filename).data
 df_before = cleaning.DataCleaner(filename=filename).entry_data 
 df_clean = cleaning.DataCleaner(filename=filename).clean_data
 
+print("df_clean columns", df_clean.columns)
 
 
 X = df_clean.drop(columns=stg.TARGET)

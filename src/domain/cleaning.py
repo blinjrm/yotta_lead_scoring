@@ -100,52 +100,52 @@ class DataCleaner :
     @staticmethod
     def _correct_select_niveau_lead(df):
         df = df.copy()
-        df[stg.NIVEAU_LEAD_COLIVEAU_LEAD] = df[stg.NIVEAU_LEAD_COLU_LEAD].replace('select', np.nan) 
+        df[stg.NIVEAU_LEAD_COL] = df[stg.NIVEAU_LEAD_COL].replace('select', np.nan) 
         return df
 
     @staticmethod
     def _add_category_formulaire_add(df):
   
-        X = X.copy()
-        X[stg.ORIGINE_LEAD_COL] = X[stg.ORIGINE_LEAD_COL].replace( "formulaire quick add","formulaire add")
-        X[stg.ORIGINE_LEAD_COL] = X[stg.ORIGINE_LEAD_COL].replace( "formulaire lead add","formulaire add",)
-        return X
+        df = df.copy()
+        df[stg.ORIGINE_LEAD_COL] = df[stg.ORIGINE_LEAD_COL].replace( "formulaire quick add","formulaire add")
+        df[stg.ORIGINE_LEAD_COL] = df[stg.ORIGINE_LEAD_COL].replace( "formulaire lead add","formulaire add",)
+        return df
 
 
     @staticmethod
     def _group_to_category_etudiant(df):
   
-        X = X.copy()
-        X[stg.NIVEAU_LEAD_COL] = X[stg.NIVEAU_LEAD_COL].replace( "etudiant d'une certaine ecole","etudiant")
-        X[stg.NIVEAU_LEAD_COL] = X[stg.NIVEAU_LEAD_COL].replace( "etudiant en double specialisation","etudiant")
+        df = df.copy()
+        df[stg.NIVEAU_LEAD_COL] = df[stg.NIVEAU_LEAD_COL].replace( "etudiant d'une certaine ecole","etudiant")
+        df[stg.NIVEAU_LEAD_COL] = df[stg.NIVEAU_LEAD_COL].replace( "etudiant en double specialisation","etudiant")
     
-        return X
+        return df
     
     
     @staticmethod
     def _create_category_en_activite(df):
   
-        X = X.copy()
-        X[stg.STATUT_ACTUEL_COL] = X[stg.STATUT_ACTUEL_COL].replace( "homme d'affaire","en activite")
-        X[stg.STATUT_ACTUEL_COL] = X[stg.STATUT_ACTUEL_COL].replace( "professionnel en activite","en activite")
-        return X
+        df = df.copy()
+        df[stg.STATUT_ACTUEL_COL] = df[stg.STATUT_ACTUEL_COL].replace( "homme d'affaire","en activite")
+        df[stg.STATUT_ACTUEL_COL] = df[stg.STATUT_ACTUEL_COL].replace( "professionnel en activite","en activite")
+        return df
 
 
     @staticmethod
     def _regroup_categories_derniere_activite(df):
   
-        X = X.copy()
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "reinscrit aux emails","formulaire soumis sur le site")
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "stand visite au salon","approche directe")
+        df = df.copy()
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "reinscrit aux emails","formulaire soumis sur le site")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "stand visite au salon","approche directe")
         
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "email marque comme spam","ne veut pas de contact")
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "desinscrit","ne veut pas de contact")
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "email rejete","ne veut pas de contact")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "email marque comme spam","ne veut pas de contact")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "desinscrit","ne veut pas de contact")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "email rejete","ne veut pas de contact")
         
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le navigateur","a clique sur le lien")
-        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le mail","a clique sur le lien")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le navigateur","a clique sur le lien")
+        df[stg.DERNIERE_ACTIVITE_COL] = df[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le mail","a clique sur le lien")
         
-        return X
+        return df
 
 
 

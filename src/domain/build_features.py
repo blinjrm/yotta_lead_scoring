@@ -142,22 +142,6 @@ class drop_quality_niveau_lead(BaseEstimator, TransformerMixin):
         return X
 
 
-class regroupe_category_origine(BaseEstimator, TransformerMixin):
-    """regroup categories "formulaire quick add" and "formulaire lead add" to "formulaire add"
-    """
-
-    def __init__(self):
-        pass
-
-    def fit(self, X,y=None):
-        return self
-
-    def transform(self, X,y=None):
-        X = X.copy()
-        X[stg.ORIGINE_LEAD_COL] = X[stg.ORIGINE_LEAD_COL].replace( "formulaire quick add","formulaire add")
-        X[stg.ORIGINE_LEAD_COL] = X[stg.ORIGINE_LEAD_COL].replace( "formulaire lead add","formulaire add",)
-        return X
-
 
 class regroupe_create_category_autre(BaseEstimator, TransformerMixin):
     """regroup categories with less than categor_min_threshold and create the category "Autre" """
@@ -189,6 +173,24 @@ class regroupe_create_category_autre(BaseEstimator, TransformerMixin):
             temp = X[col].apply(lambda x: x if x in self.mapping[i] else 'autre')
             X[col] = temp 
             i=i+1
+        
+        return X
+
+
+
+
+class add_pays_zone(BaseEstimator, TransformerMixin):
+    """add the feature geographic zone """
+
+    def __init__(self):
+        pass
+
+    def fit(self, X,y=None):
+
+        return self
+
+
+    def transform(self, X,y=None):
         
         return X
 
