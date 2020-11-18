@@ -1,16 +1,14 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
-
-from statsmodels.distributions.empirical_distribution import ECDF
 from scipy import stats
+from statsmodels.distributions.empirical_distribution import ECDF
 
+import src.domain.cleaning as cleaning
+import src.infrastructure.make_dataset as make_dataset
 import src.settings.base as stg
 import src.settings.column_names as column_names
-import src.infrastructure.make_dataset as make_dataset
-import src.domain.cleaning as cleaning
-
 
 
 def top_variables_discretes(df,features):

@@ -6,15 +6,14 @@ Should NOT contain any secrets.
 >>> stg.COL_NAME
 """
 
-import os
-import yaml
 import logging
+import os
+
+import yaml
 
 from src.settings.column_names import *
 
 
-# By default the raw data is stored in this repository's "data/raw/" folder.
-# You can change it in your own settings file.
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 RAW_DATA_DIR = os.path.join(REPO_DIR, 'data/raw/')

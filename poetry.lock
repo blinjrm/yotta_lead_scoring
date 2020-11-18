@@ -634,6 +634,26 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "mlxtend"
+version = "0.17.3"
+description = "Machine Learning Library Extensions"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+joblib = ">=0.13.2"
+matplotlib = ">=3.0.0"
+numpy = ">=1.16.2"
+pandas = ">=0.24.2"
+scikit-learn = ">=0.20.3"
+scipy = ">=1.2.1"
+
+[package.extras]
+docs = ["mkdocs"]
+testing = ["pytest"]
+
+[[package]]
 name = "nbclient"
 version = "0.5.1"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
@@ -1229,6 +1249,14 @@ postgresql_psycopg2cffi = ["psycopg2cffi"]
 pymysql = ["pymysql"]
 
 [[package]]
+name = "start"
+version = "0.2"
+description = "Very simple command to start a single process from a Procfile"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "statsmodels"
 version = "0.12.1"
 description = "Statistical computations and models for Python"
@@ -1409,7 +1437,7 @@ scikit-learn = ["scikit-learn"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8214eaab514fe36f19c4515172efe711218c00aebe48ebc53a67cc98edc6dd25"
+content-hash = "b43ed7b2ec5873dcb13ef6ae237ba670af9d9f7db5b6da8f88d01e802e22fb86"
 
 [metadata.files]
 alembic = [
@@ -1755,6 +1783,10 @@ mistune = [
     {file = "mistune-0.8.4-py2.py3-none-any.whl", hash = "sha256:88a1051873018da288eee8538d476dffe1262495144b33ecb586c4ab266bb8d4"},
     {file = "mistune-0.8.4.tar.gz", hash = "sha256:59a3429db53c50b5c6bcc8a07f8848cb00d7dc8bdb431a4ab41920d201d4756e"},
 ]
+mlxtend = [
+    {file = "mlxtend-0.17.3-py2.py3-none-any.whl", hash = "sha256:7504c6e3ad633996c1bb2589b44ac2cd559b9e7212361ba115daf89809ffa031"},
+    {file = "mlxtend-0.17.3.tar.gz", hash = "sha256:66d10059630a84c394cd8d82bca62c3da77b9fe6566f03656f2b52e353b8fe06"},
+]
 nbclient = [
     {file = "nbclient-0.5.1-py3-none-any.whl", hash = "sha256:4d6b116187c795c99b9dba13d46e764d596574b14c296d60670c8dfe454db364"},
     {file = "nbclient-0.5.1.tar.gz", hash = "sha256:01e2d726d16eaf2cde6db74a87e2451453547e8832d142f73f72fddcd4fe0250"},
@@ -2020,28 +2052,19 @@ pyzmq = [
     {file = "pyzmq-20.0.0-cp35-cp35m-macosx_10_9_intel.whl", hash = "sha256:523d542823cabb94065178090e05347bd204365f6e7cb260f0071c995d392fc2"},
     {file = "pyzmq-20.0.0-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:225774a48ed7414c0395335e7123ef8c418dbcbe172caabdc2496133b03254c2"},
     {file = "pyzmq-20.0.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:bc7dd697356b31389d5118b9bcdef3e8d8079e8181800c4e8d72dccd56e1ff68"},
-    {file = "pyzmq-20.0.0-cp35-cp35m-win32.whl", hash = "sha256:d81184489369ec325bd50ba1c935361e63f31f578430b9ad95471899361a8253"},
-    {file = "pyzmq-20.0.0-cp35-cp35m-win_amd64.whl", hash = "sha256:7113eb93dcd0a5750c65d123ed0099e036a3a3f2dcb48afedd025ffa125c983b"},
     {file = "pyzmq-20.0.0-cp36-cp36m-macosx_10_9_intel.whl", hash = "sha256:b62113eeb9a0649cebed9b21fd578f3a0175ef214a2a91dcb7b31bbf55805295"},
     {file = "pyzmq-20.0.0-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:f0beef935efe78a63c785bb21ed56c1c24448511383e3994927c8bb2caf5e714"},
     {file = "pyzmq-20.0.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:46250789730489009fe139cbf576679557c070a6a3628077d09a4153d52fd381"},
-    {file = "pyzmq-20.0.0-cp36-cp36m-win32.whl", hash = "sha256:bf755905a7d30d2749079611b9a89924c1f2da2695dc09ce221f42122c9808e3"},
-    {file = "pyzmq-20.0.0-cp36-cp36m-win_amd64.whl", hash = "sha256:2742e380d186673eee6a570ef83d4568741945434ba36d92b98d36cdbfedbd44"},
     {file = "pyzmq-20.0.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:1e9b75a119606732023a305d1c214146c09a91f8116f6aff3e8b7d0a60b6f0ff"},
     {file = "pyzmq-20.0.0-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:03638e46d486dd1c118e03c8bf9c634bdcae679600eac6573ae1e54906de7c2f"},
     {file = "pyzmq-20.0.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:63ee08e35be72fdd7568065a249a5b5cf51a2e8ab6ee63cf9f73786fcb9e710b"},
-    {file = "pyzmq-20.0.0-cp37-cp37m-win32.whl", hash = "sha256:c95dda497a7c1b1e734b5e8353173ca5dd7b67784d8821d13413a97856588057"},
-    {file = "pyzmq-20.0.0-cp37-cp37m-win_amd64.whl", hash = "sha256:cc09c5cd1a4332611c8564d65e6a432dc6db3e10793d0254da9fa1e31d9ffd6d"},
     {file = "pyzmq-20.0.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:6e24907857c80dc67692e31f5bf3ad5bf483ee0142cec95b3d47e2db8c43bdda"},
     {file = "pyzmq-20.0.0-cp38-cp38-manylinux1_i686.whl", hash = "sha256:895695be380f0f85d2e3ec5ccf68a93c92d45bd298567525ad5633071589872c"},
     {file = "pyzmq-20.0.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:d92c7f41a53ece82b91703ea433c7d34143248cf0cead33aa11c5fc621c764bf"},
-    {file = "pyzmq-20.0.0-cp38-cp38-win32.whl", hash = "sha256:309d763d89ec1845c0e0fa14e1fb6558fd8c9ef05ed32baec27d7a8499cc7bb0"},
-    {file = "pyzmq-20.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:0e554fd390021edbe0330b67226325a820b0319c5b45e1b0a59bf22ccc36e793"},
     {file = "pyzmq-20.0.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:cfa54a162a7b32641665e99b2c12084555afe9fc8fe80ec8b2f71a57320d10e1"},
     {file = "pyzmq-20.0.0-cp39-cp39-manylinux1_i686.whl", hash = "sha256:5efe02bdcc5eafcac0aab531292294298f0ab8d28ed43be9e507d0e09173d1a4"},
     {file = "pyzmq-20.0.0-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:0af84f34f27b5c6a0e906c648bdf46d4caebf9c8e6e16db0728f30a58141cad6"},
     {file = "pyzmq-20.0.0-cp39-cp39-win32.whl", hash = "sha256:c63fafd2556d218368c51d18588f8e6f8d86d09d493032415057faf6de869b34"},
-    {file = "pyzmq-20.0.0-cp39-cp39-win_amd64.whl", hash = "sha256:f110a4d3f8f01209eec304ed542f6c8054cce9b0f16dfe3d571e57c290e4e133"},
     {file = "pyzmq-20.0.0-pp36-pypy36_pp73-macosx_10_9_x86_64.whl", hash = "sha256:4d9259a5eb3f71abbaf61f165cacf42240bfeea3783bebd8255341abdfe206f1"},
     {file = "pyzmq-20.0.0.tar.gz", hash = "sha256:824ad5888331aadeac772bce27e1c2fbcab82fade92edbd234542c4e12f0dca9"},
 ]
@@ -2148,6 +2171,9 @@ sqlalchemy = [
     {file = "SQLAlchemy-1.3.20-cp39-cp39-win32.whl", hash = "sha256:0cca1844ba870e81c03633a99aa3dc62256fb96323431a5dec7d4e503c26372d"},
     {file = "SQLAlchemy-1.3.20-cp39-cp39-win_amd64.whl", hash = "sha256:d05cef4a164b44ffda58200efcb22355350979e000828479971ebca49b82ddb1"},
     {file = "SQLAlchemy-1.3.20.tar.gz", hash = "sha256:d2f25c7f410338d31666d7ddedfa67570900e248b940d186b48461bd4e5569a1"},
+]
+start = [
+    {file = "start-0.2.tar.gz", hash = "sha256:29247a6a870012f15859ac55b4f93215b2e6f2b1318cbe23609f6895132ae278"},
 ]
 statsmodels = [
     {file = "statsmodels-0.12.1-cp36-cp36m-macosx_10_13_x86_64.whl", hash = "sha256:3b482ab9759b89cc1c4777b71c1ccf272e868a7551fc6b74da300557407d8379"},

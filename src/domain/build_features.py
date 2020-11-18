@@ -9,9 +9,11 @@ CategoricalTransformer
 """
 
 
-from sklearn.base import BaseEstimator, TransformerMixin
-import src.settings.base as stg
 import logging
+
+from sklearn.base import BaseEstimator, TransformerMixin
+
+import src.settings.base as stg
 
 
 class FeatureSelector(BaseEstimator, TransformerMixin):

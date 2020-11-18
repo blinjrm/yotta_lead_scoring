@@ -1,22 +1,27 @@
-''' 
-
-
-'''
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.svm import SVC
-from catboost import CatBoostClassifier
-from mlxtend.classifier import StackingCVClassifier
+"""Module to define the optimal classifier
+using hyperparameter optimization and
+model stacking
+"""
 
 import os
-import optuna
 import pickle
+
+import optuna
+from catboost import CatBoostClassifier
+from mlxtend.classifier import StackingCVClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+
 import src.settings.base as stg
 
 
 def objective_RF(trial, X_train, y_train, X_valid, y_valid):
+    """
+    define the Optuna objective function to find 
+    the optimal hyperparameters for the random forest model. 
+    """
 
     param = {
         'n_estimators': trial.suggest_int('n_estimators', 2, 20),
@@ -33,6 +38,10 @@ def objective_RF(trial, X_train, y_train, X_valid, y_valid):
 
 
 def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
+    """
+    define the Optuna objective function to find 
+    the optimal hyperparameters for the CatBoost model. 
+    """
 
     param = {
         'objective': trial.suggest_categorical('objective', ['Logloss', 'CrossEntropy']),
@@ -56,6 +65,10 @@ def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
 
 
 def objective_SVC(trial, X_train, y_train, X_valid, y_valid):
+    """
+    define the Optuna objective function to find 
+    the optimal hyperparameters for the SVM model. 
+    """
 
     param = {
         'kernel': trial.suggest_categorical('kernel', ['linear', 'poly', 'rbf']),
@@ -73,6 +86,11 @@ def objective_SVC(trial, X_train, y_train, X_valid, y_valid):
 
 
 def tune_hyperparameters(X_train, y_train, X_valid, y_valid):
+    """
+    Define Optuna studies and optimize the hyperparameters
+    of the models.
+    """
+
     optuna.logging.set_verbosity(optuna.logging.WARNING)
 
     study_RF = optuna.create_study(direction="maximize")
@@ -94,6 +112,10 @@ def tune_hyperparameters(X_train, y_train, X_valid, y_valid):
 
 
 def create_stacked_model(X_train, y_train, X_valid, y_valid):
+    """create a stacked model, combining the optimized random forest and catboost models
+    with a logistic regression meta-classifier
+    """
+
     rf, catb = tune_hyperparameters(X_train, y_train, X_valid, y_valid)
     lr = LogisticRegression()
 
@@ -112,15 +134,17 @@ def create_stacked_model(X_train, y_train, X_valid, y_valid):
 
 if __name__ == "__main__":
 
-    import pandas as pd
-    import src.domain.cleaning as cleaning
+    from warnings import simplefilter
+
     import category_encoders as ce
-    from sklearn.model_selection import train_test_split
+    import pandas as pd
     from sklearn.impute import SimpleImputer
+    from sklearn.model_selection import train_test_split
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import MinMaxScaler
-    
-    from warnings import simplefilter
+
+    import src.domain.cleaning as cleaning
+
     # ignore all future warnings
     simplefilter(action='ignore', category=FutureWarning)
 

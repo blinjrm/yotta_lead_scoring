@@ -7,11 +7,12 @@ DataCleaner
 """
 
 
-import pandas as pd
-import numpy as np
 import logging
 
-import src.infrastructure.make_dataset as infra 
+import numpy as np
+import pandas as pd
+
+import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
 
 
@@ -92,21 +93,10 @@ class DataCleaner :
         df[stg.NB_VISITES_COL] = np.where((df[stg.NB_VISITES_COL]==251) & (df.index==stg.OUTLIER_ID), np.nan, df[stg.NB_VISITES_COL])
         df[stg.DUREE_SUR_SITEWEB_COL] = np.where((df[stg.DUREE_SUR_SITEWEB_COL]==49.0) & (df.index==stg.OUTLIER_ID), np.nan, df[stg.DUREE_SUR_SITEWEB_COL])
     
-        return df    
+        return df
 
     @staticmethod
     def _correct_select_niveau_lead(df):
         df = df.copy()
         df['NIVEAU_LEAD'] = df['NIVEAU_LEAD'].replace('select', np.nan) 
         return df
-
-
-
-  
-
-
-
-
-
-
-    

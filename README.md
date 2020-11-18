@@ -105,3 +105,44 @@ $ poetry install
 ## 3. Start coding! 
 
 The output file containing the predictions will go in the folder `outputs/`.
+
+
+
+    ├── README.md                      <- The top-level README for developers using this project.
+    │
+    ├── activate.sh
+    │
+    ├── data
+    │   ├── processed                  <- The final, canonical data sets for modeling.
+    │   └── raw                        <- The original, immutable data dump.
+    │
+    ├── logs                           <- Folder containing the logs
+    │
+    ├── model                          <- Folder containing the trained model, to be used for predictions. 
+    │
+    ├── notebooks                      <- Jupyter notebooks.
+    │
+    ├── outputs                        <- Folder contraining the predictions of the model.
+    │
+    ├── poetry.lock                    <- Lock file to secure the version of dependencies.
+    │
+    ├── pyproject.toml                 <- Poetry file with dependencies.
+    │
+    └── src                            <- Source code for use in this project.
+        ├── __init__.py                <- Makes src a Python module.
+        │
+        ├── application                <- Scripts to train models and then use trained models to make predictions.
+        │   ├── model.py
+        │   ├── predict.py
+        │   └── train.py
+        │
+        ├── domain
+        │   ├── build_features.py
+        │   └── cleaning.py
+        │
+        ├── infrastructure
+        │   └── make_dataset.py
+        │
+        └── settings
+            ├── base.py
+            └── column_names.py
