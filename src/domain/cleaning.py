@@ -62,7 +62,9 @@ class DataCleaner :
         df_with_corrected_niveau_lead = self._correct_select_niveau_lead(df_without_outliers_errors)
         df_with_category_formulaire_add = self._add_category_formulaire_add(df_with_corrected_niveau_lead)
         df_with_category_etudiant = self._group_to_category_etudiant(df_with_category_formulaire_add)
-        return df_with_category_etudiant
+        df_with_category_en_activite = self._create_category_en_activite(df_with_category_etudiant)
+        df_with_change_derniere_activite = self._regroup_categories_derniere_activite(df_with_category_en_activite)
+        return df_with_change_derniere_activite
 
     @staticmethod
     def _drop_not_exploitable_features(df):
@@ -116,8 +118,7 @@ class DataCleaner :
         X = X.copy()
         X[stg.NIVEAU_LEAD_COL] = X[stg.NIVEAU_LEAD_COL].replace( "etudiant d'une certaine ecole","etudiant")
         X[stg.NIVEAU_LEAD_COL] = X[stg.NIVEAU_LEAD_COL].replace( "etudiant en double specialisation","etudiant")
-        
-        
+    
         return X
     
     
@@ -130,8 +131,22 @@ class DataCleaner :
         return X
 
 
-STATUT_ACTUEL : homme d'affaire --> professionnel en activite
+    @staticmethod
+    def _regroup_categories_derniere_activite(df):
+  
+        X = X.copy()
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "reinscrit aux emails","formulaire soumis sur le site")
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "stand visite au salon","approche directe")
+        
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "email marque comme spam","ne veut pas de contact")
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "desinscrit","ne veut pas de contact")
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "email rejete","ne veut pas de contact")
+        
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le navigateur","a clique sur le lien")
+        X[stg.DERNIERE_ACTIVITE_COL] = X[stg.DERNIERE_ACTIVITE_COL].replace( "a clique sur le lien dans le mail","a clique sur le lien")
+        
+        return X
 
 
 
-    
+
