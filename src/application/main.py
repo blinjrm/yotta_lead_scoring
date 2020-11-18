@@ -33,6 +33,10 @@ import pandas as pd
 import src.domain.cleaning as cleaning  
 from src.domain.build_features import FeatureSelector, NumericalTransformer
 import src.settings.base as stg
+from src.domain.build_features import add_durre_moy_par_visite, add_nb_visites_null
+from src.domain.build_features import drop_indexes, drop_quality_niveau_lead, drop_scores
+from src.domain.build_features import regroupe_category_origine, regroupe_create_category_autre
+import src.infrastructure.make_dataset as infra 
 
 
 stg.enable_logging(log_filename=f'{basename(__file__)}.log', logging_level=logging.INFO)
@@ -44,25 +48,36 @@ filename = PARSER.parse_args().filename
 logging.info('_'*39)
 logging.info('_________ Launch new analysis _________\n')
 
+df0 = infra.DatasetBuilder(filename).data
 
-
+df_before = cleaning.DataCleaner(filename=filename).entry_data 
 df_clean = cleaning.DataCleaner(filename=filename).clean_data
+
+
 
 X = df_clean.drop(columns=stg.TARGET)
 y = df_clean[stg.TARGET].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+
 num_pipeline = make_pipeline(FeatureSelector(np.number),
+                            add_nb_visites_null(),
+                            add_durre_moy_par_visite(),
+                            drop_scores(),
                              #NumericalTransformer(),
-                             # Deal with outliers
+                             # Deal with outliers - transformation log
                              SimpleImputer(strategy='median'),
                              StandardScaler()
                              )
 
 cat_pipeline = make_pipeline(FeatureSelector('category'),
-                             SimpleImputer(strategy="most_frequent"),
-                             OneHotEncoder(handle_unknown="ignore")
+                            drop_quality_niveau_lead(),
+                            drop_indexes(),
+                            regroupe_category_origine(),
+                            regroupe_create_category_autre(),
+                            SimpleImputer(strategy="most_frequent"),
+                            OneHotEncoder(handle_unknown="ignore")
                              )
 
 data_pipeline = make_union(num_pipeline, cat_pipeline)
@@ -87,4 +102,4 @@ print('\nlog_loss : ', log_loss, '\n')
 data_with_prediction = X_test.copy()
 data_with_prediction['prediction'] = pd.Series(y_pred, index=data_with_prediction.index)                                      
 data_with_prediction = data_with_prediction.sort_values(by=['prediction'], ascending=False)
-print(data_with_prediction)
+#print(data_with_prediction)
