@@ -2,9 +2,12 @@
 
 Classes
 -------
+AddFeatures
 FeatureSelector
-NumericalTransformer
-CategoricalTransformer
+DropScores
+DropIndexes
+DropQualityAndNiveauLead
+RegroupeCreateCategoryAutre
 
 """
 
@@ -123,7 +126,7 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
         return X.select_dtypes(include=self._dtype)
 
 
-class drop_scores(BaseEstimator, TransformerMixin):
+class DropScores(BaseEstimator, TransformerMixin):
     """drop SCORE_ACTIVITE and SCORE_PROFILE
     """
 
@@ -138,7 +141,7 @@ class drop_scores(BaseEstimator, TransformerMixin):
         X = X.drop([stg.SCORE_ACTIVITE_COL,stg.SCORE_PROFIL_COL],axis=1)
         return X
 
-class drop_indexes(BaseEstimator, TransformerMixin):
+class DropIndexes(BaseEstimator, TransformerMixin):
     """drop INDEX_PROFIL and INDEX_ACTIVITE
     """
 
@@ -153,7 +156,7 @@ class drop_indexes(BaseEstimator, TransformerMixin):
         X = X.drop([stg.INDEX_ACTIVITE_COL,stg.INDEX_PROFIL_COL],axis=1)
         return X
 
-class drop_quality_niveau_lead(BaseEstimator, TransformerMixin):
+class DropQualityAndNiveauLead(BaseEstimator, TransformerMixin):
     """drop INDEX_PROFIL and INDEX_ACTIVITE
     """
 
@@ -168,7 +171,7 @@ class drop_quality_niveau_lead(BaseEstimator, TransformerMixin):
         X = X.drop([stg.QUALITE_LEAD_COL,stg.NIVEAU_LEAD_COL],axis=1)
         return X
 
-class regroupe_create_category_autre(BaseEstimator, TransformerMixin):
+class RegroupeCreateCategoryAutre(BaseEstimator, TransformerMixin):
     """regroup categories with less than categor_min_threshold and create the category "Autre" """
 
     def __init__(self):

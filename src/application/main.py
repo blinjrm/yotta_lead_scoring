@@ -35,8 +35,8 @@ import pandas as pd
 import src.domain.cleaning as cleaning  
 from src.domain.build_features import FeatureSelector
 import src.settings.base as stg
-from src.domain.build_features import drop_indexes, drop_quality_niveau_lead, drop_scores
-from src.domain.build_features import regroupe_create_category_autre
+from src.domain.build_features import DropIndexes, DropQualityAndNiveauLead, DropScores
+from src.domain.build_features import RegroupeCreateCategoryAutre
 from src.domain.build_features import AddFeatures
 import src.infrastructure.make_dataset as infra 
 
@@ -84,7 +84,7 @@ def get_column_names_from_ColumnTransformer(column_transformer):
 
 
 num_pipeline = make_pipeline(FeatureSelector(np.number),
-                            drop_scores(),
+                            DropScores(),
                             FunctionTransformer(np.log1p),
                             # winsorization 
                             SimpleImputer(strategy='median'),
@@ -93,9 +93,9 @@ num_pipeline = make_pipeline(FeatureSelector(np.number),
                              )
 
 cat_pipeline = make_pipeline(FeatureSelector('category'),
-                            drop_quality_niveau_lead(),
-                            drop_indexes(),
-                            regroupe_create_category_autre(),
+                            DropQualityAndNiveauLead(),
+                            DropIndexes(),
+                            RegroupeCreateCategoryAutre(),
                             SimpleImputer(strategy="most_frequent"),
                             # frequency encoder
                             OneHotEncoder(handle_unknown="ignore")
