@@ -179,7 +179,23 @@ class regroupe_create_category_autre(BaseEstimator, TransformerMixin):
 
 
 
-class add_pays_zone(BaseEstimator, TransformerMixin):
+
+import pycountry_convert as pc
+
+def country_to_continent(country_name):
+
+    all_countries = list(pc.map_countries().keys())
+
+    if country_name in all_countries :
+        country_alpha2 = pc.country_name_to_country_alpha2(country_name)
+        country_continent_code = pc.country_alpha2_to_continent_code(country_alpha2)
+        country_continent_name = pc.convert_continent_code_to_continent_name(country_continent_code)
+        return country_continent_name
+    else:
+        return country_name 
+
+
+class add_zone(BaseEstimator, TransformerMixin):
     """add the feature geographic zone """
 
     def __init__(self):
@@ -189,8 +205,15 @@ class add_pays_zone(BaseEstimator, TransformerMixin):
 
         return self
 
-
     def transform(self, X,y=None):
-        
+
+        X['ZONE'] = X[stg.PAYS_COL].str.title()
+        cardinalite = X['ZONE'].value_counts(dropna=False)
+
+        for country in list(cardinalite.index) :
+            X['ZONE'] = X['ZONE'].replace(country,country_to_continent(country))
+
+        X['ZONE'] = X['ZONE'].str.lower()
+      
         return X
 
