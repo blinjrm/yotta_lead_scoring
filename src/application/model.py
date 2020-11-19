@@ -101,7 +101,7 @@ def tune_hyperparameters(X_train, y_train, X_valid, y_valid):
     study_CatB.optimize(lambda trial: objective_CatB(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
     catb = CatBoostClassifier(**study_CatB.best_params, verbose=0)
 
-    return rf, catb 
+    return rf, catb
 
 
 def create_stacked_model(X_train, y_train, X_valid, y_valid):
@@ -122,9 +122,42 @@ def create_stacked_model(X_train, y_train, X_valid, y_valid):
 
     return stacked_model
 
-    # filename = os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')
-    # with open(filename, 'wb') as f:
-    #     pickle.dump(stacked_model, f)
+
+
+
+
+
+
+def tune_random_forest(X_train, y_train, X_valid, y_valid):
+    """
+    Define Optuna studies and optimize the hyperparameters
+    of the models.
+    """
+
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+    study_RF = optuna.create_study(direction="maximize")
+    study_RF.optimize(lambda trial: objective_RF(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
+    rf = RandomForestClassifier(**study_RF.best_params)
+
+    return rf
+
+def tune_catboost(X_train, y_train, X_valid, y_valid):
+    """
+    Define Optuna studies and optimize the hyperparameters
+    of the models.
+    """
+
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+    study_CatB = optuna.create_study(direction="maximize")
+    study_CatB.optimize(lambda trial: objective_CatB(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
+    catb = CatBoostClassifier(**study_CatB.best_params, verbose=0)
+
+    return catb
+
+
+
 
 
 if __name__ == "__main__":

@@ -124,12 +124,12 @@ class drop_indexes(BaseEstimator, TransformerMixin):
 
     def transform(self, X,y=None):
         X = X.copy()
-        X = X.drop([stg.INDEX_ACTIVITE_COL,stg.INDEX_PROFIL_COL],axis=1)
+        X = X.drop([stg.INDEX_ACTIVITE_COL, stg.INDEX_PROFIL_COL],axis=1)
         return X
 
 
 class drop_quality_niveau_lead(BaseEstimator, TransformerMixin):
-    """drop INDEX_PROFIL and INDEX_ACTIVITE
+    """drop QUALITE_LEAD and NIVEAU_LEAD
     """
 
     def __init__(self):
@@ -140,7 +140,7 @@ class drop_quality_niveau_lead(BaseEstimator, TransformerMixin):
 
     def transform(self, X,y=None):
         X = X.copy()
-        X = X.drop([stg.QUALITE_LEAD_COL,stg.NIVEAU_LEAD_COL],axis=1)
+        X = X.drop([stg.QUALITE_LEAD_COL, stg.NIVEAU_LEAD_COL],axis=1)
         return X
 
 
@@ -170,7 +170,6 @@ class regroupe_create_category_autre(BaseEstimator, TransformerMixin):
 
     def fit(self, X,y=None):
         categorial_col = X.select_dtypes(include='category').columns
-        print(categorial_col)
 
         for col in categorial_col :
             counts = X[col].value_counts(dropna=False)

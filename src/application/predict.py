@@ -32,14 +32,14 @@ import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
 
 
-stg.enable_logging(log_filename=f'{basename(__file__)}.log', logging_level=logging.INFO)
+stg.enable_logging(log_filename='project_logs.log', logging_level=logging.INFO)
 
 PARSER = argparse.ArgumentParser(description='File containing the dataset.')
 PARSER.add_argument('--filename', '-f', required=True, help='Name of the file containing the data to make predictions')
 filename = PARSER.parse_args().filename
 
 logging.info('_'*42)
-logging.info('_________ Launch new prediction _________\n')
+logging.info('_________ Launch new prediction __________\n')
 
 
     # Deal with the different directory !!!
@@ -47,15 +47,24 @@ logging.info('_________ Launch new prediction _________\n')
 # X_predict = infra.DatasetBuilder(filename).data
 X_predict = cleaning.DataCleaner(filename=filename).clean_data
 
-model_filename = os.path.join(stg.MODEL_DIR, 'stacked_model.pkl')
+if stg.TARGET in X_predict.columns:
+    X_predict.drop(columns=stg.TARGET, inplace=True)
+
+
 try:
-    with open(model_filename, 'rb') as f:
-        stacked_model = pickle.load(f)
-        sys.exit()
+    logging.info('Loading existing model from model/..')
+    with open(stg.SAVED_MODEL_FILE, 'rb') as f:
+        full_pipeline = pickle.load(f)
+    logging.info('.. Done \n')
 except FileNotFoundError:
+    logging.info('.. Error: no trained model has been found in model/')
     raise
 
-y_predict = stacked_model.predict_proba(X_predict)[:,1]
+
+logging.info('Using model for predictions..')
+y_predict = full_pipeline.predict_proba(X_predict)[:,1]
+logging.info('.. Done \n')
+
 
 data_with_prediction = X_predict.copy()
 data_with_prediction['prediction'] = pd.Series(y_predict, index=data_with_prediction.index)                                      
