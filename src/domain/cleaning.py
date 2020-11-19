@@ -64,7 +64,8 @@ class DataCleaner :
         df_with_category_etudiant = self._group_to_category_etudiant(df_with_category_formulaire_add)
         df_with_category_en_activite = self._create_category_en_activite(df_with_category_etudiant)
         df_with_change_derniere_activite = self._regroup_categories_derniere_activite(df_with_category_en_activite)
-        return df_with_change_derniere_activite
+        df_with_corrected_pays = self._correct_unknow_pays_to_nan(df_with_change_derniere_activite)
+        return df_with_corrected_pays
 
     @staticmethod
     def _drop_not_exploitable_features(df):
@@ -150,5 +151,10 @@ class DataCleaner :
         return df
 
 
+    @staticmethod
+    def _correct_unknow_pays_to_nan(df):
+
+        df[stg.PAYS_COL] = df[stg.PAYS_COL].replace("unknown", np.nan)
+        return df 
 
 
