@@ -104,6 +104,7 @@ class AddFeatures :
         for country in list(cardinalite.index) :
             X['ZONE'] = X['ZONE'].replace(country,country_to_continent(country))
         X['ZONE'] = X['ZONE'].str.lower()
+        X['ZONE'] = X['ZONE'].astype("category") 
         return X
 
 
