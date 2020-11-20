@@ -14,14 +14,13 @@ from mlxtend.classifier import StackingCVClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.pipeline import Pipeline, make_pipeline, make_union
 from sklearn.preprocessing import (FunctionTransformer, OneHotEncoder,
                                    RobustScaler, StandardScaler)
 
 import src.settings.base as stg
-from src.domain.build_features import (DropIndexes, DropQualityAndNiveauLead,
-                                       DropScores, FeatureSelector,
+from src.domain.build_features import (DropFeatures, FeatureSelector,
                                        RegroupeCreateCategoryAutre)
 
 
@@ -29,18 +28,17 @@ def create_pipeline():
     """ create the pipeline preparing the data to be fed into the classifier
     """
     num_pipeline = make_pipeline(FeatureSelector(np.number),
-                                 DropScores(),
+                                 DropFeatures(stg.FEATURES_NUM_TO_DROP),
                                  FunctionTransformer(np.log1p),
                                  SimpleImputer(strategy='median'),
                                  RobustScaler()
                                  )
 
     cat_pipeline = make_pipeline(FeatureSelector('category'),
-                                 DropQualityAndNiveauLead(),
-                                 DropIndexes(),
+                                 DropFeatures(stg.FEATURES_CAT_TO_DROP),
                                  RegroupeCreateCategoryAutre(),
                                  SimpleImputer(strategy="most_frequent"),
-                                 OneHotEncoder(handle_unknown="ignore")
+                                 ce.TargetEncoder()
                                  )
 
     data_pipeline = make_union(num_pipeline, cat_pipeline)

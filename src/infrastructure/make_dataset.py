@@ -102,15 +102,14 @@ class DataCleaner:
         df_with_index = df.set_index(stg.ID_CLIENT_COL)
         return df_with_index
 
-    def _drop_samples_without_target(self,df):
+    def _drop_samples_without_target(self, df):
         df = df.copy()
         df_without_target_nan = df.dropna(subset=[stg.CONVERTI_COL])
         return df_without_target_nan
-    
-    def _change_object_type_to_category(self,df):
+
+    def _change_object_type_to_category(self, df):
         df_changed = df.copy()
-        numerical_cols = df.select_dtypes(include=np.number).columns
         categorial_cols = df.select_dtypes(include=object).columns
-        for col in categorial_cols :
+        for col in categorial_cols:
             df_changed[col] = df_changed[col].astype("category")
         return df_changed

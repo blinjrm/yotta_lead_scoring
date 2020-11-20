@@ -28,8 +28,8 @@ from sklearn.metrics import (accuracy_score, classification_report,
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 
-import src.domain.cleaning as cleaning
-import src.infrastructure.make_dataset as infra
+# import src.domain.cleaning as cleaning
+# import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
 from src.application.model import create_model, create_pipeline
 from src.domain.build_features import AddFeatures
@@ -53,29 +53,6 @@ X = df.drop(columns=stg.TARGET)
 y = df[stg.TARGET].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-'''
-# TODO essayer d'adopter pour recuperer les noms des colonnes
-def get_column_names_from_ColumnTransformer(column_transformer):    
-    col_name = []
-    for transformer_in_columns in column_transformer.transformers_:#the last transformer is ColumnTransformer's 'remainder'
-        raw_col_name = transformer_in_columns[2]
-        if isinstance(transformer_in_columns[1],Pipeline): 
-            transformer = transformer_in_columns[1].steps[-1][1]
-        else:
-            transformer = transformer_in_columns[1]
-        try:
-            names = transformer.get_feature_names()
-        except AttributeError: # if no 'get_feature_names' function, use raw column name
-            names = raw_col_name
-        if isinstance(names,np.ndarray): # eg.
-            col_name += names.tolist()
-        elif isinstance(names,list):
-            col_name += names    
-        elif isinstance(names,str):
-            col_name.append(names)
-    return col_name
-'''
 
 data_pipeline = create_pipeline()
 
