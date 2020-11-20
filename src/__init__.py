@@ -1,4 +1,4 @@
 from .application.model import create_pipeline, objective_CatB, objective_RF
-from .domain.cleaning import DataCleaner
+from src.domain.build_features import AddFeatures
 
-__all__ = ['objective_RF', 'objective_CatB', 'create_pipeline', 'DataCleaner']
+__all__ = ['objective_RF', 'objective_CatB', 'create_pipeline', 'AddFeatures']

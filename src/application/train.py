@@ -4,11 +4,11 @@ Example
 -------
 Script could be run with the following command line from the shell :
 
-    $ python src/application/main.py -f data.csv
+    $ python src/application/train.py -f data.csv
 
 Script could be run with the following command line from a python interpreter :
 
-    >>> run src/application/main.py -f data.csv
+    >>> run src/application/train.py -f data.csv
 
 Attributes
 ----------
