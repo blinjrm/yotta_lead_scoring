@@ -31,14 +31,13 @@ import src.domain.cleaning as cleaning
 import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
 
-
 stg.enable_logging(log_filename='project_logs.log', logging_level=logging.INFO)
 
 PARSER = argparse.ArgumentParser(description='File containing the dataset.')
 PARSER.add_argument('--filename', '-f', required=True, help='Name of the file containing the data to make predictions')
 filename = PARSER.parse_args().filename
 
-logging.info('_'*42)
+logging.info('_'*20)
 logging.info('_________ Launch new prediction __________\n')
 
 

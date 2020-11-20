@@ -35,19 +35,21 @@ class DatasetBuilder:
             return df
 
     def _check_file_extension(self, filename):
+        logging.info('-'*20)
         logging.info('Confirm file extension is .csv ..')
         if filename.endswith('.csv'):
-            logging.info('.. Done \n')
+            logging.info('.. Done')
             return True
         else:
             logging.info('.. ERROR: Extension must be .csv')
             raise FileExistsError('Extension must be .csv')
 
     def _open_file(self, filename):
+        logging.info('-'*20)
         logging.info('Load data ..')
         try:
             df = pd.read_csv(''.join((stg.RAW_DATA_DIR, filename)), sep=';')
-            logging.info('.. Done \n')
+            logging.info('.. Done')
             return df
         except FileNotFoundError as error:
             logging.info('.. FileNotFoundError')
@@ -112,7 +114,3 @@ class DataCleaner:
         for col in categorial_cols :
             df_changed[col] = df_changed[col].astype("category")
         return df_changed
-
-
-
-    

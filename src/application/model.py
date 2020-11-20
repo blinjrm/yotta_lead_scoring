@@ -1,26 +1,57 @@
-"""Module to define the optimal classifier
-using hyperparameter optimization and
-model stacking
+"""Module to create the pipeline and define the optimal classifier
+using hyperparameter optimization and model stacking
 """
 
+import logging
 import os
 import pickle
 
+import category_encoders as ce
+import numpy as np
 import optuna
 from catboost import CatBoostClassifier
 from mlxtend.classifier import StackingCVClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline, make_pipeline, make_union
+from sklearn.preprocessing import (FunctionTransformer, OneHotEncoder,
+                                   RobustScaler, StandardScaler)
 
 import src.settings.base as stg
+from src.domain.build_features import (DropIndexes, DropQualityAndNiveauLead,
+                                       DropScores, FeatureSelector,
+                                       RegroupeCreateCategoryAutre)
+
+
+def create_pipeline():
+    """ create the pipeline preparing the data to be fed into the classifier
+    """
+    num_pipeline = make_pipeline(FeatureSelector(np.number),
+                                 DropScores(),
+                                 FunctionTransformer(np.log1p),
+                                 SimpleImputer(strategy='median'),
+                                 RobustScaler()
+                                 )
+
+    cat_pipeline = make_pipeline(FeatureSelector('category'),
+                                 DropQualityAndNiveauLead(),
+                                 DropIndexes(),
+                                 RegroupeCreateCategoryAutre(),
+                                 SimpleImputer(strategy="most_frequent"),
+                                 OneHotEncoder(handle_unknown="ignore")
+                                 )
+
+    data_pipeline = make_union(num_pipeline, cat_pipeline)
+
+    return data_pipeline
 
 
 def objective_RF(trial, X_train, y_train, X_valid, y_valid):
     """
-    define the Optuna objective function to find 
-    the optimal hyperparameters for the random forest model. 
+    define the Optuna objective function to find
+    the optimal hyperparameters for the random forest model.
     """
 
     param = {
@@ -39,8 +70,8 @@ def objective_RF(trial, X_train, y_train, X_valid, y_valid):
 
 def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
     """
-    define the Optuna objective function to find 
-    the optimal hyperparameters for the CatBoost model. 
+    define the Optuna objective function to find
+    the optimal hyperparameters for the CatBoost model.
     """
 
     param = {
@@ -64,70 +95,6 @@ def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
     return accuracy
 
 
-def objective_SVC(trial, X_train, y_train, X_valid, y_valid):
-    """
-    define the Optuna objective function to find 
-    the optimal hyperparameters for the SVM model. 
-    """
-
-    param = {
-        'kernel': trial.suggest_categorical('kernel', ['linear', 'poly', 'rbf']),
-        'C': trial.suggest_float('C', 0.01, 0.1),
-        'gamma': trial.suggest_int('gamma', 1, 10)
-    }
-
-    svc = SVC(**param)
-    svc.fit(X_train, y_train)
-
-    y_pred = svc.predict(X_valid)
-    accuracy = accuracy_score(y_valid, y_pred)
-
-    return accuracy
-
-
-def tune_hyperparameters(X_train, y_train, X_valid, y_valid):
-    """
-    Define Optuna studies and optimize the hyperparameters
-    of the models.
-    """
-
-    optuna.logging.set_verbosity(optuna.logging.WARNING)
-
-    study_RF = optuna.create_study(direction="maximize")
-    study_RF.optimize(lambda trial: objective_RF(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
-    rf = RandomForestClassifier(**study_RF.best_params)
-
-    study_CatB = optuna.create_study(direction="maximize")
-    study_CatB.optimize(lambda trial: objective_CatB(trial, X_train, y_train, X_valid, y_valid), n_trials=100)
-    catb = CatBoostClassifier(**study_CatB.best_params, verbose=0)
-
-    return rf, catb
-
-
-def create_stacked_model(X_train, y_train, X_valid, y_valid):
-    """create a stacked model, combining the optimized random forest and catboost models
-    with a logistic regression meta-classifier
-    """
-
-    rf, catb = tune_hyperparameters(X_train, y_train, X_valid, y_valid)
-    lr = LogisticRegression()
-
-    stacked_model = StackingCVClassifier(classifiers=[rf, catb],
-                                         use_probas=True,
-                                         meta_classifier=lr,
-                                         random_state=42
-                                        )
-
-    stacked_model.fit(X_train, y_train)
-
-    return stacked_model
-
-
-
-
-
-
-
 def tune_random_forest(X_train, y_train, X_valid, y_valid):
     """
     Define Optuna studies and optimize the hyperparameters
@@ -141,6 +108,7 @@ def tune_random_forest(X_train, y_train, X_valid, y_valid):
     rf = RandomForestClassifier(**study_RF.best_params)
 
     return rf
+
 
 def tune_catboost(X_train, y_train, X_valid, y_valid):
     """
@@ -157,36 +125,30 @@ def tune_catboost(X_train, y_train, X_valid, y_valid):
     return catb
 
 
+def create_model(X_train, y_train, X_valid, y_valid, stacked_model):
+    """create a  model.
+    If stacked_model is true, create a model by combining the optimized random forest and catboost models
+    with a logistic regression meta-classifier.
+    Otherwise create a random forest model.
+    """
+    if stacked_model:
+        logging.info('-> option : stacked model')
+        print('Creating an optimized stacked model, this may take a while')
 
+        rf = tune_random_forest(X_train, y_train, X_valid, y_valid)
+        catb = tune_catboost(X_train, y_train, X_valid, y_valid)
+        lr = LogisticRegression()
 
+        model = StackingCVClassifier(classifiers=[rf, catb],
+                                     use_probas=True,
+                                     meta_classifier=lr,
+                                     random_state=42
+                                     )
 
-if __name__ == "__main__":
+        model.fit(X_train, y_train)
+    else:
+        logging.info('-> option : random forest classifier')
 
-    from warnings import simplefilter
+        model = tune_random_forest(X_train, y_train, X_valid, y_valid)
 
-    import category_encoders as ce
-    import pandas as pd
-    from sklearn.impute import SimpleImputer
-    from sklearn.model_selection import train_test_split
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import MinMaxScaler
-
-    import src.domain.cleaning as cleaning
-
-    # ignore all future warnings
-    simplefilter(action='ignore', category=FutureWarning)
-
-    df_clean = cleaning.DataCleaner(filename='data.csv').clean_data
-
-    X = df_clean.drop(columns=stg.TARGET)
-    y = df_clean[stg.TARGET].values
-
-    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    data_pipeline = make_pipeline(ce.TargetEncoder(),
-                                  SimpleImputer(strategy='median'),
-                                  MinMaxScaler()
-                                  )
-
-    X_train = data_pipeline.fit_transform(X_train, y_train)
-    X_valid = data_pipeline.transform(X_valid)
+    return model

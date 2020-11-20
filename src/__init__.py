@@ -1,4 +1,4 @@
-from .application.model import objective_CatB, objective_RF, objective_SVC
+from .application.model import create_pipeline, objective_CatB, objective_RF
 from .domain.cleaning import DataCleaner
 
-__all__ = ['objective_RF', 'objective_CatB', 'objective_SVC', 'DataCleaner']
+__all__ = ['objective_RF', 'objective_CatB', 'create_pipeline', 'DataCleaner']

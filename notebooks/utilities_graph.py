@@ -297,3 +297,38 @@ def plot_matrix_correlation(df,features):
     sns.heatmap(temp.corr('kendall'),annot=True, fmt = ".0%", cmap = "coolwarm", ax=ax)
     ax.set_title("Corrélation de Kendall")
 
+
+
+def plot_hist_categorial(features): 
+
+    nb_features = len(features)
+
+    if np.mod(nb_features,2)==0 :
+        nb_rows = int(nb_features/2)
+    else :
+        nb_rows = int(np.ceil(nb_features/2) ) 
+
+    fig, axes = plt.subplots(nb_rows, 2)
+
+    plt.subplots_adjust(wspace=0.2, hspace=0.4)
+    fig.set_figheight(65)
+    fig.set_figwidth(16)
+
+    i = 0 
+    j = 0
+    nb = 0
+
+    for feature in features :
+
+        series=df_cat[feature].value_counts()/df_cat[feature].notnull().sum()
+        sns.barplot(x=series.index, y=series, ax=axes[i][j])
+        axes[i][j].set_title('Distribution of {}'.format(feature))
+        axes[i][j].set_yticklabels(['{:.0%}'.format(x) for x in axes[i][j].get_yticks()])
+        axes[i][j].tick_params(axis='x', rotation=90)
+        
+        j = j+1
+        
+        nb = nb+1
+        if np.mod(nb,2)==0 :
+            i = i+1
+            j = 0

@@ -13,7 +13,6 @@ import yaml
 
 from src.settings.column_names import *
 
-
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 RAW_DATA_DIR = os.path.join(REPO_DIR, 'data/training/')
@@ -60,7 +59,7 @@ CONSTANT_FEATURES_TO_DROP = [
 OTHER_FEATURES_TO_DROP = [
     NB_PAGES_VUES_PAR_VISITE_COL,
     DERNIERE_ACTIVITE_NOTABLE_COL,
-    # TAGS_COL
+    TAGS_COL
 ]
 
 FEATURES_WITH_LOW_SECOND_CATEGORY_TO_DROP = [
