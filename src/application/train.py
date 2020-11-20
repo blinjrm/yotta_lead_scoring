@@ -9,7 +9,6 @@ Script could be run with the following command line from the shell :
 Script could be run with the following command line from a python interpreter :
 
     >>> run src/application/train.py -f data.csv
-    >>> run src/application/train.py -f data.csv -s  (to train a more complex, stacked model - takes much longer to train)
 
 Attributes
 ----------
@@ -29,6 +28,8 @@ from sklearn.metrics import (classification_report, precision_recall_curve,
                              precision_score)
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
 
 import src.settings.base as stg
 from src.application.model import create_model, create_pipeline
@@ -41,9 +42,7 @@ stg.enable_logging(log_filename='project_logs.log', logging_level=logging.INFO)
 
 PARSER = argparse.ArgumentParser(description='File containing the dataset.')
 PARSER.add_argument('--filename', '-f', required=True, help='Name of the file containing the raw data')
-PARSER.add_argument('--stacked', '-s', default=False, action='store_true', help='True to use a stacked model, default False')
 filename = PARSER.parse_args().filename
-stacked_model = PARSER.parse_args().stacked
 
 
 logging.info('_'*20)
@@ -57,28 +56,40 @@ y = df[stg.TARGET].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+rf = RandomForestClassifier()
 data_pipeline = create_pipeline()
+full_pipeline = make_pipeline(data_pipeline, rf)
+
+param_grid = {'randomforestclassifier__n_estimators': [2, 10, 20, 50],
+              'randomforestclassifier__min_samples_leaf': range(1, 10)}
 
 logging.info('Finding best hyperparameters for new model..')
-X_train_transformed = data_pipeline.fit_transform(X_train, y_train)
-X_valid_transformed = data_pipeline.transform(X_test)
-
-model = create_model(X_train_transformed, y_train, X_valid_transformed, y_test, stacked_model)
-logging.info('.. Done \n')
-
-pipeline = make_pipeline(data_pipeline, model)
+clf = GridSearchCV(estimator=full_pipeline, param_grid=param_grid, cv=5)
 
 logging.info('Training model..')
-pipeline.fit(X_train, y_train)
-logging.info('.. Done \n')
+clf.fit(X_train, y_train)
 
-
-logging.info('Saving trained model..')
-with open(stg.SAVED_MODEL_FILE, 'wb') as f:
-    pickle.dump(pipeline, f)
-logging.info('.. Done \n')
-
-y_pred = pipeline.predict(X_test)
+logging.info('Evaluating model..')
+y_pred = clf.predict(X_test)
 
 print(f'\nThe model was successfully trained, with a precision of {precision_score(y_test, y_pred)}%.')
 print("classification_report\n", classification_report(y_test, y_pred))
+
+logging.info('Saving trained model..')
+with open(stg.SAVED_MODEL_FILE, 'wb') as f:
+    pickle.dump(clf, f)
+
+
+
+# logging.info('Finding best hyperparameters for new model..')
+# X_train_transformed = data_pipeline.fit_transform(X_train, y_train)
+# X_valid_transformed = data_pipeline.transform(X_test)
+
+# model = create_model(X_train_transformed, y_train, X_valid_transformed, y_test, stacked_model)
+# logging.info('.. Done \n')
+
+# pipeline = make_pipeline(data_pipeline, model)
+
+# logging.info('Training model..')
+# pipeline.fit(X_train, y_train)
+# logging.info('.. Done \n')
