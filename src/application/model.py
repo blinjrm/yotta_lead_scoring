@@ -62,8 +62,8 @@ def objective_RF(trial, X_train, y_train, X_valid, y_valid):
     rf.fit(X_train, y_train)
 
     y_pred = rf.predict(X_valid)
-    # result = precision_score(y_valid, y_pred, zero_division=0)
-    result = accuracy_score(y_valid, y_pred)
+    result = precision_score(y_valid, y_pred, zero_division=0)
+    # result = accuracy_score(y_valid, y_pred)
 
     return result
 
@@ -90,8 +90,8 @@ def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
     catb.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], verbose=0, early_stopping_rounds=30)
 
     y_pred = catb.predict(X_valid)
-    # result = precision_score(y_valid, y_pred, zero_division=0)
-    result = accuracy_score(y_valid, y_pred)
+    result = precision_score(y_valid, y_pred, zero_division=0)
+    # result = accuracy_score(y_valid, y_pred)
 
     return result
 
