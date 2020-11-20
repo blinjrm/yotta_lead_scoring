@@ -49,7 +49,7 @@ class AddFeatures:
 
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, mode):
         """Initialize class.
 
         Parameters
@@ -58,7 +58,7 @@ class AddFeatures:
             CSV filename containing data
 
         """
-        self.entry_data = cleaning.DataCleaner(filename=filename).clean_data
+        self.entry_data = cleaning.DataCleaner(filename=filename, mode=mode).clean_data
 
     @property
     def data_with_all_fetaures(self):

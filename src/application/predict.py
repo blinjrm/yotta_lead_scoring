@@ -27,9 +27,10 @@ from os.path import basename, join
 
 import pandas as pd
 
-import src.domain.cleaning as cleaning
-import src.infrastructure.make_dataset as infra
+# import src.domain.cleaning as cleaning
+# import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
+from src.domain.build_features import AddFeatures
 
 stg.enable_logging(log_filename='project_logs.log', logging_level=logging.INFO)
 
@@ -41,10 +42,9 @@ logging.info('_'*20)
 logging.info('_________ Launch new prediction __________\n')
 
 
-    # Deal with the different directory !!!
 
 # X_predict = infra.DatasetBuilder(filename).data
-X_predict = cleaning.DataCleaner(filename=filename).clean_data
+X_predict = AddFeatures(filename=filename, mode='predict').data_with_all_fetaures
 
 if stg.TARGET in X_predict.columns:
     X_predict.drop(columns=stg.TARGET, inplace=True)

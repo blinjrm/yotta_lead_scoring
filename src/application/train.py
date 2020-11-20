@@ -28,8 +28,6 @@ from sklearn.metrics import (accuracy_score, classification_report,
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 
-# import src.domain.cleaning as cleaning
-# import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
 from src.application.model import create_model, create_pipeline
 from src.domain.build_features import AddFeatures
@@ -47,7 +45,7 @@ logging.info('_'*20)
 logging.info('_________ Launch new training ___________\n')
 
 
-df = AddFeatures(filename=filename).data_with_all_fetaures
+df = AddFeatures(filename=filename, mode='train').data_with_all_fetaures
 
 X = df.drop(columns=stg.TARGET)
 y = df[stg.TARGET].values

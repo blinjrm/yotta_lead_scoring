@@ -26,12 +26,12 @@ class DatasetBuilder:
 
     """
 
-    def __init__(self, filename):
-        self.data = self._load_data_from_csv(filename)
+    def __init__(self, filename, mode):
+        self.data = self._load_data_from_csv(filename, mode)
 
-    def _load_data_from_csv(self, filename):
+    def _load_data_from_csv(self, filename, mode):
         if self._check_file_extension(filename):
-            df = self._open_file(filename)
+            df = self._open_file(filename, mode)
             return df
 
     def _check_file_extension(self, filename):
@@ -44,11 +44,15 @@ class DatasetBuilder:
             logging.info('.. ERROR: Extension must be .csv')
             raise FileExistsError('Extension must be .csv')
 
-    def _open_file(self, filename):
+    def _open_file(self, filename, mode):
         logging.info('-'*20)
         logging.info('Load data ..')
+        if mode == 'train':
+            DIR = stg.RAW_DATA_DIR
+        else:
+            DIR = stg.PREDICTION_DATA_DIR
         try:
-            df = pd.read_csv(''.join((stg.RAW_DATA_DIR, filename)), sep=';')
+            df = pd.read_csv(''.join((DIR, filename)), sep=';')
             logging.info('.. Done')
             return df
         except FileNotFoundError as error:

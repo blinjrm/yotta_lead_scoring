@@ -31,7 +31,7 @@ class DataCleaner:
 
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, mode):
         """Initialize class.
 
         Parameters
@@ -41,7 +41,7 @@ class DataCleaner:
 
         """
 
-        self.entry_data = infra.DataCleaner(infra.DatasetBuilder(filename).data).data
+        self.entry_data = infra.DataCleaner(infra.DatasetBuilder(filename, mode).data).data
 
     @property
     def clean_data(self):

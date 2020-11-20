@@ -30,7 +30,7 @@ def create_pipeline():
     num_pipeline = make_pipeline(FeatureSelector(np.number),
                                  DropFeatures(stg.FEATURES_NUM_TO_DROP),
                                  FunctionTransformer(np.log1p),
-                                 SimpleImputer(strategy='median'),
+                                 SimpleImputer(strategy='median', add_indicator=True),
                                  RobustScaler()
                                  )
 

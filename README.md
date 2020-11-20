@@ -5,15 +5,15 @@ Sujet : Lead Scoring for Yotta Executive Education
 
 Copyright : 2020, Dorota Bailly & Jerome Blin
 
-==============================
+___
 
-## Project Organization
-------------
+# Project Organization
+
 
     ├── README.md                      <- The top-level README for developers using this project.
     │
-    ├── activate.sh                    <- Sript to configure the environment (PYTHONPATH, dependencies, virtual environment). 
-    │
+    ├── activate.sh                    <- Sript to configure the environment
+    │                                     (PYTHONPATH, dependencies, virtual environment).
     ├── data
     │   ├── processed                  <- The final, canonical data sets for modeling.
     │   └── raw                        <- The original, immutable data dump.
@@ -38,18 +38,18 @@ Copyright : 2020, Dorota Bailly & Jerome Blin
         │   ├── predict.py
         │   └── train.py
         │
-        ├── domain                     <- Sripts to clean the data and include feature engineering
+        ├── domain                     <- Sripts to clean the data and include feature engineering.
         │   ├── build_features.py
         │   └── cleaning.py
         │
-        ├── infrastructure             <- Scripts to load the raw data in a Pandas DataFrame
+        ├── infrastructure             <- Scripts to load the raw data in a Pandas DataFrame.
         │   └── make_dataset.py
         │
-        └── settings                   <- Scripts containing the settings
+        └── settings                   <- Scripts containing the settings.
             ├── base.py
             └── column_names.py
 
-==============================
+___
 
 # Getting Started
 
@@ -60,13 +60,13 @@ $ git clone <this project>
 $ cd <this project>
 ```
 
-## 1. Setup your environment
+## 2. Setup your environment
 
-Goal : 
-- add the directory to the PYTHONPATH
-- install the dependencies (if some are missing)
-- create a local virtual environment in the folder `./.venv/` (if it does not exist already)
-- activate the virtual environment
+Goal :   
+Add the directory to the PYTHONPATH  
+Install the dependencies (if some are missing)  
+Create a local virtual environment in the folder `./.venv/` (if it does not exist already)  
+Activate the virtual environment  
 
 - First: check your python3 version:
 
@@ -92,31 +92,39 @@ Goal :
 - Now that python3 is installed create and configure your environment:
 
     `$ source activate.sh`
+    
+    This command will : 
+    - Add the project directory to your PYTHONPATH
+    - Install the requiered dependencies
+    - Create (if necessary) the virtual environmnet
+    - Activate the virtual environment
 
-    You sould **always** activate your environment when working on the project.
+    You sould **always** use this command when working on the project in a new session. 
 
 
-## 2. Train the model
+## 3. Train the model
 
-- The raw data to train the model on must be in the data/raw/ directory
+- The raw data to train the model on must be in the data/training/ directory
 - Run the training script using : 
+
 from the shell :
-    $ python src/application/train.py -f data.csv
+    `$ python src/application/train.py -f data.csv`
 
 from a python interpreter :
-    >>> run src/application/train.py -f data.csv
+    `>>> run src/application/train.py -f data.csv`
 
 - The trained model will be saved in the model/ directory as a pickle file. 
 
 
-## 3. Use the model for predictions
+## 4. Use the model for predictions
 
-- The data used for prediction must be in the data/raw/ directory
+- The data used for prediction must be in the data/prediction/ directory
 - Run the training script using : 
+
 from the shell :
-    $ python src/application/predict.py -f data.csv
+    `$ python src/application/predict.py -f new_data.csv`
 
 from a python interpreter :
-    >>> run src/application/predict.py -f data.csv
+    `>>> run src/application/predict.py -f new_data.csv`
 
 - The file containing the predictions will be saved in the outputs/ directory as a csv file. 
