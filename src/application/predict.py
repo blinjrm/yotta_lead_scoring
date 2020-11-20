@@ -4,11 +4,11 @@ Example
 -------
 Script could be run with the following command line from the shell :
 
-    $ python src/application/predict.py -f data.csv
+    $ python src/application/predict.py -f new_data.csv
 
 Script could be run with the following command line from a python interpreter :
 
-    >>> run src/application/predict.py -f data.csv
+    >>> run src/application/predict.py -f new_data.csv
 
 Attributes
 ----------
@@ -26,11 +26,35 @@ import sys
 from os.path import basename, join
 
 import pandas as pd
+from scipy.sparse import data
 
-# import src.domain.cleaning as cleaning
-# import src.infrastructure.make_dataset as infra
 import src.settings.base as stg
 from src.domain.build_features import AddFeatures
+
+
+def load_pipeline():
+    try:
+        logging.info('Loading existing model from model/..')
+        with open(stg.SAVED_MODEL_FILE, 'rb') as f:
+            pipeline = pickle.load(f)
+        logging.info('.. Done \n')
+    except FileNotFoundError:
+        logging.info('.. Error: no trained model has been found in model/')
+        raise
+    return pipeline
+
+
+def promissing_lead(df):
+    data_with_prediction['lead_prometteur'] = 0
+    data_with_prediction.iloc[0, -1] = 1
+    for i in range(len(data_with_prediction)):
+        conv = data_with_prediction.iloc[0:i+1, -2].agg('mean')
+        if conv > 0.8:
+            data_with_prediction.iloc[i, -1] = 1
+        else:
+            break
+    return df
+
 
 stg.enable_logging(log_filename='project_logs.log', logging_level=logging.INFO)
 
@@ -41,30 +65,25 @@ filename = PARSER.parse_args().filename
 logging.info('_'*20)
 logging.info('_________ Launch new prediction __________\n')
 
-
-
-# X_predict = infra.DatasetBuilder(filename).data
 X_predict = AddFeatures(filename=filename, mode='predict').data_with_all_fetaures
 
 if stg.TARGET in X_predict.columns:
     X_predict.drop(columns=stg.TARGET, inplace=True)
 
-
-try:
-    logging.info('Loading existing model from model/..')
-    with open(stg.SAVED_MODEL_FILE, 'rb') as f:
-        full_pipeline = pickle.load(f)
-    logging.info('.. Done \n')
-except FileNotFoundError:
-    logging.info('.. Error: no trained model has been found in model/')
-    raise
-
+pipeline = load_pipeline()
 
 logging.info('Using model for predictions..')
-y_predict = full_pipeline.predict_proba(X_predict)[:,1]
+y_predict = pipeline.predict_proba(X_predict)[:, 1]
 logging.info('.. Done \n')
 
-
 data_with_prediction = X_predict.copy()
-data_with_prediction['prediction'] = pd.Series(y_predict, index=data_with_prediction.index)                                      
-data_with_prediction = data_with_prediction.sort_values(by=['prediction'], ascending=False)
+data_with_prediction['probabilite_de_conversion'] = pd.Series(y_predict, index=data_with_prediction.index)
+data_with_prediction = data_with_prediction.sort_values(by=['probabilite_de_conversion'], ascending=False)
+
+# TODO: indiquer si données suspectes
+
+data_with_promissing_lead = promissing_lead(data_with_prediction)
+
+logging.info('Exporting data with results..')
+data_with_prediction.to_csv('outputs/data_with_predictions.csv')
+logging.info('.. Done \n')

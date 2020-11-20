@@ -91,7 +91,9 @@ Activate the virtual environment
 
 - Now that python3 is installed create and configure your environment:
 
-    `$ source activate.sh`
+    ```
+    $ source activate.sh
+    ```
     
     This command will : 
     - Add the project directory to your PYTHONPATH
@@ -108,10 +110,14 @@ Activate the virtual environment
 - Run the training script using : 
 
 from the shell :
-    `$ python src/application/train.py -f data.csv`
+    ```
+    $ python src/application/train.py -f data.csv
+    ```
 
 from a python interpreter :
-    `>>> run src/application/train.py -f data.csv`
+    ```
+    >>> run src/application/train.py -f data.csv
+    ```
 
 - The trained model will be saved in the model/ directory as a pickle file. 
 
@@ -122,9 +128,13 @@ from a python interpreter :
 - Run the training script using : 
 
 from the shell :
-    `$ python src/application/predict.py -f new_data.csv`
+    ```
+    $ python src/application/predict.py -f new_data.csv
+    ```
 
 from a python interpreter :
-    `>>> run src/application/predict.py -f new_data.csv`
+    ```
+    >>> run src/application/predict.py -f new_data.csv
+    ```
 
-- The file containing the predictions will be saved in the outputs/ directory as a csv file. 
+- The file containing the predictions will be saved in the outputs/ directory as a csv file named *data_with_predictions.csv*

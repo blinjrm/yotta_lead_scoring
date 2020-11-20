@@ -9,6 +9,7 @@ Script could be run with the following command line from the shell :
 Script could be run with the following command line from a python interpreter :
 
     >>> run src/application/train.py -f data.csv
+    >>> run src/application/train.py -f data.csv -s  (to train a more complex, stacked model - takes much longer to train)
 
 Attributes
 ----------
@@ -21,16 +22,20 @@ import logging
 import os
 import pickle
 from os.path import basename, join
+from warnings import simplefilter
 
 import pandas as pd
-from sklearn.metrics import (accuracy_score, classification_report,
-                             precision_recall_curve)
+from sklearn.metrics import (classification_report, precision_recall_curve,
+                             precision_score)
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 
 import src.settings.base as stg
 from src.application.model import create_model, create_pipeline
 from src.domain.build_features import AddFeatures
+
+# ignore all future warnings
+simplefilter(action='ignore', category=FutureWarning)
 
 stg.enable_logging(log_filename='project_logs.log', logging_level=logging.INFO)
 
@@ -74,9 +79,6 @@ with open(stg.SAVED_MODEL_FILE, 'wb') as f:
 logging.info('.. Done \n')
 
 y_pred = pipeline.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-print(f'\nThe model was successfully trained, with an accuracy of {accuracy}%.')
 
-print("precision_recall_curve\n", precision_recall_curve(y_test, y_pred))
-
+print(f'\nThe model was successfully trained, with a precision of {precision_score(y_test, y_pred)}%.')
 print("classification_report\n", classification_report(y_test, y_pred))

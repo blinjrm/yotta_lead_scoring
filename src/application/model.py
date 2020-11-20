@@ -2,6 +2,7 @@
 using hyperparameter optimization and model stacking
 """
 
+
 import logging
 import os
 import pickle
@@ -14,7 +15,7 @@ from mlxtend.classifier import StackingCVClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import precision_score, accuracy_score
 from sklearn.pipeline import Pipeline, make_pipeline, make_union
 from sklearn.preprocessing import (FunctionTransformer, OneHotEncoder,
                                    RobustScaler, StandardScaler)
@@ -61,9 +62,10 @@ def objective_RF(trial, X_train, y_train, X_valid, y_valid):
     rf.fit(X_train, y_train)
 
     y_pred = rf.predict(X_valid)
-    accuracy = accuracy_score(y_valid, y_pred)
+    # result = precision_score(y_valid, y_pred, zero_division=0)
+    result = accuracy_score(y_valid, y_pred)
 
-    return accuracy
+    return result
 
 
 def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
@@ -88,9 +90,10 @@ def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
     catb.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], verbose=0, early_stopping_rounds=30)
 
     y_pred = catb.predict(X_valid)
-    accuracy = accuracy_score(y_valid, y_pred)
+    # result = precision_score(y_valid, y_pred, zero_division=0)
+    result = accuracy_score(y_valid, y_pred)
 
-    return accuracy
+    return result
 
 
 def tune_random_forest(X_train, y_train, X_valid, y_valid):
@@ -129,6 +132,7 @@ def create_model(X_train, y_train, X_valid, y_valid, stacked_model):
     with a logistic regression meta-classifier.
     Otherwise create a random forest model.
     """
+
     if stacked_model:
         logging.info('-> option : stacked model')
         print('Creating an optimized stacked model, this may take a while')
@@ -143,7 +147,7 @@ def create_model(X_train, y_train, X_valid, y_valid, stacked_model):
                                      random_state=42
                                      )
 
-        model.fit(X_train, y_train)
+        # model.fit(X_train, y_train)
     else:
         logging.info('-> option : random forest classifier')
 

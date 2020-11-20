@@ -38,7 +38,7 @@ class DatasetBuilder:
         logging.info('-'*20)
         logging.info('Confirm file extension is .csv ..')
         if filename.endswith('.csv'):
-            logging.info('.. Done')
+            logging.info('.. Done \n')
             return True
         else:
             logging.info('.. ERROR: Extension must be .csv')
@@ -53,7 +53,7 @@ class DatasetBuilder:
             DIR = stg.PREDICTION_DATA_DIR
         try:
             df = pd.read_csv(''.join((DIR, filename)), sep=';')
-            logging.info('.. Done')
+            logging.info('.. Done \n')
             return df
         except FileNotFoundError as error:
             logging.info('.. FileNotFoundError')
