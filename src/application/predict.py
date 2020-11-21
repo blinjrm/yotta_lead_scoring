@@ -18,12 +18,8 @@ PARSER: argparse.ArgumentParser
 
 
 import argparse
-import errno
 import logging
-import os
 import pickle
-import sys
-from os.path import basename, join
 
 import pandas as pd
 from scipy.sparse import data
@@ -65,7 +61,7 @@ filename = PARSER.parse_args().filename
 logging.info('_'*20)
 logging.info('_________ Launch new prediction __________\n')
 
-X_predict = AddFeatures(filename=filename, mode='predict').data_with_all_fetaures
+X_predict = AddFeatures(filename=filename, mode='predict').data_with_all_features
 
 if stg.TARGET in X_predict.columns:
     X_predict.drop(columns=stg.TARGET, inplace=True)
@@ -79,8 +75,6 @@ logging.info('.. Done \n')
 data_with_prediction = X_predict.copy()
 data_with_prediction['probabilite_de_conversion'] = pd.Series(y_predict, index=data_with_prediction.index)
 data_with_prediction = data_with_prediction.sort_values(by=['probabilite_de_conversion'], ascending=False)
-
-# TODO: indiquer si données suspectes
 
 data_with_promissing_lead = promissing_lead(data_with_prediction)
 

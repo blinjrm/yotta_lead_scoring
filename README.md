@@ -137,4 +137,9 @@ from a python interpreter :
     >>> run src/application/predict.py -f new_data.csv
     ```
 
-- The file containing the predictions will be saved in the outputs/ directory as a csv file named *data_with_predictions.csv*
+- The file containing the predictions will be saved in the outputs/ directory as a csv file named *data_with_predictions.csv*  
+In particular, the output of the predict.py script will be the file used for predictions, with two new columns:
+
+    - The predicted probability tha teach lead with convert
+    - An indication of whether each lead is promissing (1) or not (0)  
+    This indication is calculated such that the predicted conversion rate among the promissing lead is at 80%.

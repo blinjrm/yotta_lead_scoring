@@ -9,8 +9,6 @@ Should NOT contain any secrets.
 import logging
 import os
 
-import yaml
-
 from src.settings.column_names import *
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))

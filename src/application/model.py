@@ -4,8 +4,6 @@ using hyperparameter optimization and model stacking
 
 
 import logging
-import os
-import pickle
 
 import category_encoders as ce
 import numpy as np
@@ -15,10 +13,9 @@ from mlxtend.classifier import StackingCVClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import precision_score, accuracy_score
+from sklearn.metrics import precision_score
 from sklearn.pipeline import Pipeline, make_pipeline, make_union
-from sklearn.preprocessing import (FunctionTransformer, OneHotEncoder,
-                                   RobustScaler, StandardScaler)
+from sklearn.preprocessing import FunctionTransformer
 
 import src.settings.base as stg
 from src.domain.build_features import (DropFeatures, FeatureSelector,
@@ -32,13 +29,12 @@ def create_pipeline():
                                  DropFeatures(stg.FEATURES_NUM_TO_DROP),
                                  FunctionTransformer(np.log1p),
                                  SimpleImputer(strategy='median', add_indicator=True),
-                                 RobustScaler()
                                  )
 
     cat_pipeline = make_pipeline(FeatureSelector('category'),
                                  DropFeatures(stg.FEATURES_CAT_TO_DROP),
                                  RegroupeCreateCategoryAutre(),
-                                 SimpleImputer(strategy="most_frequent"),
+                                 SimpleImputer(strategy="most_frequent", add_indicator=True),
                                  ce.TargetEncoder()
                                  )
 
@@ -55,7 +51,8 @@ def objective_RF(trial, X_train, y_train, X_valid, y_valid):
 
     param = {
         'n_estimators': trial.suggest_int('n_estimators', 2, 20),
-        'max_depth': int(trial.suggest_float('max_depth', 1, 32, log=True))
+        'max_depth': int(trial.suggest_float('max_depth', 1, 32, log=True)),
+        'min_samples_split': trial.suggest_int('min_samples_split', 5, 10)
     }
 
     rf = RandomForestClassifier(**param)
@@ -63,7 +60,6 @@ def objective_RF(trial, X_train, y_train, X_valid, y_valid):
 
     y_pred = rf.predict(X_valid)
     result = precision_score(y_valid, y_pred, zero_division=0)
-    # result = accuracy_score(y_valid, y_pred)
 
     return result
 
@@ -91,7 +87,6 @@ def objective_CatB(trial, X_train, y_train, X_valid, y_valid):
 
     y_pred = catb.predict(X_valid)
     result = precision_score(y_valid, y_pred, zero_division=0)
-    # result = accuracy_score(y_valid, y_pred)
 
     return result
 
@@ -147,7 +142,6 @@ def create_model(X_train, y_train, X_valid, y_valid, stacked_model):
                                      random_state=42
                                      )
 
-        # model.fit(X_train, y_train)
     else:
         logging.info('-> option : random forest classifier')
 

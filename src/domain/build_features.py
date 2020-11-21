@@ -13,7 +13,6 @@ import logging
 
 import pycountry_convert as pc
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.model_selection import train_test_split
 
 import src.domain.cleaning as cleaning
 import src.settings.base as stg
@@ -61,7 +60,7 @@ class AddFeatures:
         self.entry_data = cleaning.DataCleaner(filename=filename, mode=mode).clean_data
 
     @property
-    def data_with_all_fetaures(self):
+    def data_with_all_features(self):
         """ Main methode to add all features """
 
         df = self.entry_data.copy()
