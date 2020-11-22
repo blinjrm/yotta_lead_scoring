@@ -15,8 +15,8 @@ ___
     ├── activate.sh                    <- Sript to configure the environment
     │                                     (PYTHONPATH, dependencies, virtual environment).
     ├── data
-    │   ├── processed                  <- The final, canonical data sets for modeling.
-    │   └── raw                        <- The original, immutable data dump.
+    │   ├── prediction                 <- Folder containing the data to use for predictions.
+    │   └── training                   <- Folder containing the data for training the model.
     │
     ├── logs                           <- Folder containing the logs
     │
