@@ -1,5 +1,5 @@
 """
-Contains column nmes for the file containing the data. 
+Contains column names for the file containing the data. 
 """
 
 
